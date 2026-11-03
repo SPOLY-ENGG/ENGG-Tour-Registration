@@ -13,7 +13,7 @@
   <header class="top">
     <div>
       <h1>Tour Information</h1>
-      <p class="sub">What each tour covers. Tap a tour's title or photo for the full write-up, photos and video.</p>
+      <p class="sub">What each tour covers, with photos and video.</p>
     </div>
   </header>
 
@@ -22,6 +22,31 @@
   <main id="toursRoot"></main>
 
   <footer class="site-footer">Built with vanilla HTML, CSS &amp; JavaScript — no frameworks, no build step.</footer>
+</div>
+
+<!-- Edit mode modal (photo/video/full description) — shared across all 3
+     tour cards; the Save handler knows which tour via editModal.dataset.tourId -->
+<div class="modal-backdrop" id="editModal" hidden>
+  <div class="modal">
+    <h2>Edit this tour's details</h2>
+    <div class="edit-field">
+      <label>Background photo URL</label>
+      <input type="text" id="f-hero" placeholder="https://example.com/photo.jpg">
+    </div>
+    <div class="edit-field">
+      <label>Video URL (direct .mp4 link, or a YouTube link)</label>
+      <input type="text" id="f-video" placeholder="https://example.com/video.mp4">
+    </div>
+    <div class="edit-field">
+      <label>Full description</label>
+      <textarea id="f-detail" style="min-height:160px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="editCancel">Cancel</button>
+      <button type="button" class="btn primary" id="editSave">Save changes</button>
+    </div>
+    <p class="form-msg" id="editMsg"></p>
+  </div>
 </div>
 
 <script src="tours-info.js"></script>

@@ -13,7 +13,6 @@
   var tourShortDesc = document.getElementById('tourShortDesc');
   var dayBadge = document.getElementById('dayBadge');
   var statusLine = document.getElementById('statusLine');
-  var moreInfoLink = document.getElementById('moreInfoLink');
   var slotGrid = document.getElementById('slotGrid');
   var bookingPanel = document.getElementById('bookingPanel');
   var selectionList = document.getElementById('selectionList');
@@ -109,7 +108,6 @@
       tourTitle.textContent = tour.name;
       document.title = tour.name + ' — Engineering Open House';
       tourShortDesc.textContent = tour.shortDescription || '';
-      moreInfoLink.href = 'tour.html?id=' + encodeURIComponent(tour.id);
       statusLine.textContent = '';
       render();
     }).catch(function () {
