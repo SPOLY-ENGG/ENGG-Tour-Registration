@@ -57,21 +57,23 @@
   // The 8 SP School of Engineering full-time diplomas — full name and
   // course code confirmed directly from each course's own sp.edu.sg page
   // title, listed in alphabetical order by full name. Each tile links out
-  // (new tab) to that course's own official sp.edu.sg landing page — the
-  // base course folder each confirmed subpage (entry-requirements, etc.)
-  // was found nested under.
+  // (new tab) to that course's own official sp.edu.sg landing page, using
+  // the current "courses/schools/<cluster>/<slug>" URL structure — the
+  // older "engineering-cluster/.../full-time-diplomas/..." paths used here
+  // previously were broken (that structure appears to be deprecated/
+  // inconsistent site-wide), confirmed one by one via fresh searches.
   var COURSE_ICON =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5z"></path><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path><path d="M22 9v6"></path></svg>';
   var TINTS = ['tint-1', 'tint-2', 'tint-3'];
   var COURSES = [
-    { name: 'Common Engineering Programme', code: 'CEP', courseCode: 'S40', url: 'https://sp.edu.sg/engineering-cluster/eee/courses/full-time-diplomas/cep' },
-    { name: 'Diploma in Aeronautical Engineering', code: 'DARE', courseCode: 'S88', url: 'https://sp.edu.sg/engineering-cluster/mae/courses/full-time-diplomas/aeronautical-engineering-' },
-    { name: 'Diploma in Aerospace Electronics', code: 'DASE', courseCode: 'S90', url: 'https://sp.edu.sg/engineering-cluster/eee/courses/full-time-diplomas/aerospace-electronics' },
-    { name: 'Diploma in Computer Engineering', code: 'DCPE', courseCode: 'S53', url: 'https://sp.edu.sg/engineering-cluster/eee/courses/full-time-diplomas/computer-engineering' },
-    { name: 'Diploma in Electrical & Electronic Engineering', code: 'DEEE', courseCode: 'S99', url: 'https://sp.edu.sg/engineering-cluster/eee/courses/full-time-diplomas/electrical-electronic-engineering' },
-    { name: 'Diploma in Engineering with Business', code: 'DEB', courseCode: 'S42', url: 'https://sp.edu.sg/engineering-cluster/eee/courses/full-time-diplomas/engineering-with-business' },
-    { name: 'Diploma in Mechanical Engineering', code: 'DME', courseCode: 'S91', url: 'https://sp.edu.sg/engineering-cluster/mae/courses/full-time-diplomas/mechanical-engineering' },
-    { name: 'Diploma in Mechatronics & Robotics', code: 'DMRO', courseCode: 'S73', url: 'https://sp.edu.sg/engineering-cluster/mae/courses/full-time-diplomas/mechatronics-and-robotics' },
+    { name: 'Common Engineering Programme', code: 'CEP', courseCode: 'S40', url: 'https://www.sp.edu.sg/courses/schools/mae/common-engineering-programme' },
+    { name: 'Diploma in Aeronautical Engineering', code: 'DARE', courseCode: 'S88', url: 'https://www.sp.edu.sg/courses/schools/mae/aeronautical-engineering' },
+    { name: 'Diploma in Aerospace Electronics', code: 'DASE', courseCode: 'S90', url: 'https://www.sp.edu.sg/courses/schools/eee/aerospace-electronics' },
+    { name: 'Diploma in Computer Engineering', code: 'DCPE', courseCode: 'S53', url: 'https://www.sp.edu.sg/courses/schools/eee/computer-engineering' },
+    { name: 'Diploma in Electrical & Electronic Engineering', code: 'DEEE', courseCode: 'S99', url: 'https://www.sp.edu.sg/courses/schools/eee/electrical-electronic-engineering' },
+    { name: 'Diploma in Engineering with Business', code: 'DEB', courseCode: 'S42', url: 'https://www.sp.edu.sg/courses/schools/eee/engineering-with-business' },
+    { name: 'Diploma in Mechanical Engineering', code: 'DME', courseCode: 'S91', url: 'https://www.sp.edu.sg/courses/schools/mae/mechanical-engineering' },
+    { name: 'Diploma in Mechatronics & Robotics', code: 'DMRO', courseCode: 'S73', url: 'https://www.sp.edu.sg/courses/schools/mae/mechatronics-and-robotics' },
   ];
 
   COURSES.forEach(function (course, i) {
