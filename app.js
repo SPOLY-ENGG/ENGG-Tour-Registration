@@ -173,8 +173,7 @@
     bookingPanel.hidden = true;
     confirmPanel.hidden = false;
     confirmMeeting.textContent = 'Day ' + res.activeDay + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
-      ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each tour start time.' +
-      (res.emailSent ? (' A confirmation email was sent to ' + email + '.') : ' (Confirmation email could not be sent — please screenshot this page.)');
+      ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each tour start time. Please screenshot this page as your confirmation.';
     confirmList.innerHTML = '';
     confirmed.forEach(function (c) {
       var li = document.createElement('li');
