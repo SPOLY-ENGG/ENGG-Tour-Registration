@@ -516,4 +516,10 @@ h1 {
   .home-card p {
     display: none;
   }
+  /* The course-code line on the Course Information page's 8 diploma
+     tiles is essential (not decorative like the homepage's subtitles),
+     so keep it visible even at phone widths. */
+  #courseIconNav .home-card p {
+    display: block;
+  }
 }
