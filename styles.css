@@ -404,23 +404,21 @@ h1 {
 
 /* Homepage navigation tiles — a deliberate light-pastel exception to the
    page's dark theme, matching the catalog-card look from the other site.
-   Compact by design so all 6 tiles are visible at a glance without
-   scrolling, even on a phone screen — icon + title only; the longer
-   description is hidden below 700px (see media query) to keep the tile
-   short rather than wrapping onto several lines. */
+   Single column, one compact row per tile (icon beside the title, not
+   stacked above it) so all 6 fit on screen without wasted vertical space. */
 .home-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr;
+  gap: 8px;
   margin-top: 12px;
 }
 
 .home-card {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 14px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
   border-radius: var(--radius);
   text-decoration: none;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -428,13 +426,14 @@ h1 {
 }
 
 .home-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .home-card-icon {
-  width: 34px;
-  height: 34px;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -444,20 +443,24 @@ h1 {
 }
 
 .home-card-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
+}
+
+.home-card-text {
+  min-width: 0;
 }
 
 .home-card h2 {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   line-height: 1.25;
   color: #16181d;
 }
 
 .home-card p {
-  margin: 0;
-  font-size: 0.78rem;
+  margin: 2px 0 0;
+  font-size: 0.76rem;
   color: #45505e;
 }
 
@@ -471,30 +474,6 @@ h1 {
   .sub { font-size: 0.85rem; }
   .top-actions { gap: 6px; }
   .day-badge, .btn { padding: 5px 12px; font-size: 0.82rem; }
-}
-
-@media (max-width: 700px) {
-  .home-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-top: 8px;
-  }
-  .home-card {
-    padding: 8px 6px;
-    gap: 3px;
-  }
-  .home-card-icon {
-    width: 24px;
-    height: 24px;
-  }
-  .home-card-icon svg {
-    width: 13px;
-    height: 13px;
-  }
-  .home-card h2 {
-    font-size: 0.68rem;
-    line-height: 1.15;
-  }
   .home-card p {
     display: none;
   }
