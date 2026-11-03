@@ -1,0 +1,185 @@
+(function () {
+  // Keep this in sync with app.js's own API_URL — every page calls the same
+  // Apps Script Web App, but there's no shared module system here.
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzOmxD4-mc6ZfcQOvojFifrOhC0CfulUSYwZbsqWD2JCGI4aD9bunW0ZCf0S6Ju102GfQ/exec';
+
+  var params = new URLSearchParams(window.location.search);
+  var tourId = params.get('tour');
+
+  var statusData = null;
+  var selections = []; // [{slot}] — this page only ever books the one tourId above
+
+  var tourTitle = document.getElementById('tourTitle');
+  var tourShortDesc = document.getElementById('tourShortDesc');
+  var dayBadge = document.getElementById('dayBadge');
+  var statusLine = document.getElementById('statusLine');
+  var moreInfoLink = document.getElementById('moreInfoLink');
+  var slotGrid = document.getElementById('slotGrid');
+  var bookingPanel = document.getElementById('bookingPanel');
+  var selectionList = document.getElementById('selectionList');
+  var emailInput = document.getElementById('emailInput');
+  var participantsInput = document.getElementById('participantsInput');
+  var submitBtn = document.getElementById('submitBtn');
+  var formMsg = document.getElementById('formMsg');
+  var confirmPanel = document.getElementById('confirmPanel');
+  var confirmMeeting = document.getElementById('confirmMeeting');
+  var confirmList = document.getElementById('confirmList');
+  var newRegBtn = document.getElementById('newRegBtn');
+
+  function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
+
+  function apiGet(p) {
+    var url = API_URL + '?' + Object.keys(p).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&');
+    return fetch(url).then(function (r) { return r.json(); });
+  }
+
+  function apiPost(body) {
+    return fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); });
+  }
+
+  function vacancyClass(vacancy, capacity) {
+    if (vacancy <= 0) return 'full';
+    if (vacancy / capacity <= 0.2) return 'low';
+    return '';
+  }
+
+  function currentTour() {
+    return statusData.tours.find(function (t) { return t.id === tourId; });
+  }
+
+  function render() {
+    var tour = currentTour();
+    dayBadge.textContent = 'Day ' + statusData.activeDay;
+    slotGrid.innerHTML = '';
+    statusData.slots.forEach(function (slot) {
+      var booked = statusData.counts[statusData.activeDay][tour.id][slot] || 0;
+      var vacancy = tour.capacity - booked;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot';
+      btn.disabled = vacancy <= 0;
+      var isSelected = selections.some(function (s) { return s.slot === slot; });
+      if (isSelected) btn.classList.add('selected');
+      var pct = Math.max(0, Math.min(100, (booked / tour.capacity) * 100));
+      btn.innerHTML =
+        '<span class="time">' + formatSlot(slot) + '</span>' +
+        '<span class="vacancy-text">' + (vacancy > 0 ? vacancy + ' vacancy left' : 'FULL') + '</span>' +
+        '<span class="bar"><span class="bar-fill ' + vacancyClass(vacancy, tour.capacity) + '" style="width:' + pct + '%"></span></span>';
+      btn.addEventListener('click', function () { toggleSlot(slot); });
+      slotGrid.appendChild(btn);
+    });
+    renderSelections();
+  }
+
+  function toggleSlot(slot) {
+    var existingIdx = selections.findIndex(function (s) { return s.slot === slot; });
+    if (existingIdx !== -1) {
+      selections.splice(existingIdx, 1);
+    } else {
+      selections.push({ slot: slot });
+    }
+    render();
+  }
+
+  function renderSelections() {
+    bookingPanel.hidden = selections.length === 0;
+    selectionList.innerHTML = '';
+    selections.forEach(function (s, i) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span>' + formatSlot(s.slot) + '</span>';
+      var rm = document.createElement('button');
+      rm.type = 'button';
+      rm.textContent = '✕';
+      rm.addEventListener('click', function () { selections.splice(i, 1); render(); });
+      li.appendChild(rm);
+      selectionList.appendChild(li);
+    });
+  }
+
+  function loadStatus() {
+    statusLine.textContent = 'Loading tour information…';
+    return apiGet({ action: 'status' }).then(function (data) {
+      statusData = data;
+      var tour = currentTour();
+      if (!tour) {
+        statusLine.textContent = 'Tour not found.';
+        return;
+      }
+      tourTitle.textContent = tour.name;
+      document.title = tour.name + ' — Engineering Open House';
+      tourShortDesc.textContent = tour.shortDescription || '';
+      moreInfoLink.href = 'tour.html?id=' + encodeURIComponent(tour.id);
+      statusLine.textContent = '';
+      render();
+    }).catch(function () {
+      statusLine.textContent = 'Could not load tour data. Please check your connection and refresh.';
+    });
+  }
+
+  if (!tourId) {
+    statusLine.textContent = 'No tour specified. Go back and pick a tour to register for.';
+  } else {
+    loadStatus();
+  }
+
+  submitBtn.addEventListener('click', function () {
+    var email = emailInput.value.trim();
+    var participants = Math.max(1, Number(participantsInput.value) || 1);
+    if (!email) {
+      formMsg.textContent = 'Please enter your email address.';
+      formMsg.className = 'form-msg error';
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering…';
+    apiPost({
+      action: 'register',
+      email: email,
+      bookings: selections.map(function (s) { return { tourId: tourId, slot: s.slot, participants: participants }; }),
+    }).then(function (res) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Register';
+      if (!res.ok && !(res.results && res.results.some(function (r) { return r.ok; }))) {
+        formMsg.textContent = (res.error) || 'Registration failed — please try again.';
+        formMsg.className = 'form-msg error';
+        return;
+      }
+      var failed = (res.results || []).filter(function (r) { return !r.ok; });
+      if (failed.length) {
+        formMsg.textContent = 'Some picks could not be booked: ' + failed.map(function (f) { return formatSlot(f.slot) + ' (' + f.error + ')'; }).join('; ');
+        formMsg.className = 'form-msg error';
+      }
+      showConfirmation(res, email);
+      selections = [];
+      loadStatus();
+    }).catch(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Register';
+      formMsg.textContent = 'Network error — please try again.';
+      formMsg.className = 'form-msg error';
+    });
+  });
+
+  function showConfirmation(res, email) {
+    var confirmed = (res.results || []).filter(function (r) { return r.ok; });
+    if (!confirmed.length) return;
+    bookingPanel.hidden = true;
+    confirmPanel.hidden = false;
+    confirmMeeting.textContent = 'Day ' + res.activeDay + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
+      ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each tour start time. Please screenshot this page as your confirmation.';
+    confirmList.innerHTML = '';
+    confirmed.forEach(function (c) {
+      var li = document.createElement('li');
+      li.textContent = c.tourName + ' — ' + formatSlot(c.slot);
+      confirmList.appendChild(li);
+    });
+  }
+
+  newRegBtn.addEventListener('click', function () {
+    confirmPanel.hidden = true;
+    emailInput.value = '';
+    participantsInput.value = '1';
+    formMsg.textContent = '';
+  });
+})();

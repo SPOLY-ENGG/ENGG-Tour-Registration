@@ -3,27 +3,9 @@
   // comment for deployment steps). Ends in /exec.
   var API_URL = 'https://script.google.com/macros/s/AKfycbzOmxD4-mc6ZfcQOvojFifrOhC0CfulUSYwZbsqWD2JCGI4aD9bunW0ZCf0S6Ju102GfQ/exec';
 
-  var EDIT_PASSWORD_HINT = 'Ask the tour organiser for the edit password.';
-  var USER_PASSWORD_HINT = 'Ask the tour organiser for the user password.';
-
   var statusData = null; // last fetched /status response
-  var selections = []; // [{tourId, slot}]
 
-  var toursRoot = document.getElementById('toursRoot');
-  var statusLine = document.getElementById('statusLine');
   var dayBadge = document.getElementById('dayBadge');
-  var bookingPanel = document.getElementById('bookingPanel');
-  var selectionList = document.getElementById('selectionList');
-  var emailInput = document.getElementById('emailInput');
-  var participantsInput = document.getElementById('participantsInput');
-  var submitBtn = document.getElementById('submitBtn');
-  var formMsg = document.getElementById('formMsg');
-  var confirmPanel = document.getElementById('confirmPanel');
-  var confirmMeeting = document.getElementById('confirmMeeting');
-  var confirmList = document.getElementById('confirmList');
-  var newRegBtn = document.getElementById('newRegBtn');
-
-  function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
 
   function apiGet(params) {
     var url = API_URL + '?' + Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
@@ -36,158 +18,19 @@
       .then(function (r) { return r.json(); });
   }
 
-  function vacancyClass(vacancy, capacity) {
-    if (vacancy <= 0) return 'full';
-    if (vacancy / capacity <= 0.2) return 'low';
-    return '';
-  }
-
-  function render() {
-    if (!statusData) return;
-    dayBadge.textContent = 'Day ' + statusData.activeDay;
-    toursRoot.innerHTML = '';
-    statusData.tours.forEach(function (tour) {
-      var card = document.createElement('section');
-      card.className = 'tour-card';
-      var tourUrl = 'tour.html?id=' + encodeURIComponent(tour.id);
-      var thumbHtml = tour.heroImageUrl
-        ? '<a href="' + tourUrl + '"><img class="tour-card-thumb" src="' + tour.heroImageUrl + '" alt=""></a>'
-        : '';
-      card.innerHTML =
-        '<h2><a href="' + tourUrl + '">' + tour.name + '</a></h2>' +
-        thumbHtml +
-        '<p class="desc">' + (tour.shortDescription || '') + '</p>' +
-        '<p><a class="more-link" href="' + tourUrl + '">Learn more about this tour →</a></p>' +
-        '<div class="slot-grid" data-tour="' + tour.id + '"></div>';
-      toursRoot.appendChild(card);
-
-      var grid = card.querySelector('.slot-grid');
-      statusData.slots.forEach(function (slot) {
-        var booked = statusData.counts[statusData.activeDay][tour.id][slot] || 0;
-        var vacancy = tour.capacity - booked;
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'slot';
-        btn.disabled = vacancy <= 0;
-        var isSelected = selections.some(function (s) { return s.tourId === tour.id && s.slot === slot; });
-        if (isSelected) btn.classList.add('selected');
-        var pct = Math.max(0, Math.min(100, (booked / tour.capacity) * 100));
-        btn.innerHTML =
-          '<span class="time">' + formatSlot(slot) + '</span>' +
-          '<span class="vacancy-text">' + (vacancy > 0 ? vacancy + ' vacancy left' : 'FULL') + '</span>' +
-          '<span class="bar"><span class="bar-fill ' + vacancyClass(vacancy, tour.capacity) + '" style="width:' + pct + '%"></span></span>';
-        btn.addEventListener('click', function () { toggleSlot(tour.id, tour.name, slot); });
-        grid.appendChild(btn);
-      });
-    });
-    renderSelections();
-  }
-
-  function toggleSlot(tourId, tourName, slot) {
-    var existingIdx = selections.findIndex(function (s) { return s.tourId === tourId && s.slot === slot; });
-    if (existingIdx !== -1) {
-      selections.splice(existingIdx, 1);
-    } else {
-      var clashIdx = selections.findIndex(function (s) { return s.slot === slot; });
-      if (clashIdx !== -1) {
-        formMsg.textContent = 'You already picked ' + formatSlot(slot) + ' for another tour — pick a different time for this one.';
-        formMsg.className = 'form-msg error';
-        return;
-      }
-      selections.push({ tourId: tourId, tourName: tourName, slot: slot });
-    }
-    render();
-  }
-
-  function renderSelections() {
-    bookingPanel.hidden = selections.length === 0;
-    selectionList.innerHTML = '';
-    selections.forEach(function (s, i) {
-      var li = document.createElement('li');
-      li.innerHTML = '<span>' + s.tourName + ' — ' + formatSlot(s.slot) + '</span>';
-      var rm = document.createElement('button');
-      rm.type = 'button';
-      rm.textContent = '✕';
-      rm.addEventListener('click', function () { selections.splice(i, 1); render(); });
-      li.appendChild(rm);
-      selectionList.appendChild(li);
-    });
-  }
+  function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
 
   function refreshStatus() {
-    statusLine.textContent = 'Loading tour information…';
     return apiGet({ action: 'status' }).then(function (data) {
       statusData = data;
-      statusLine.textContent = '';
-      render();
+      dayBadge.textContent = 'Day ' + statusData.activeDay;
     }).catch(function () {
-      statusLine.textContent = 'Could not load tour data. Please check your connection and refresh.';
+      dayBadge.textContent = 'Day –';
     });
   }
-
-  submitBtn.addEventListener('click', function () {
-    var email = emailInput.value.trim();
-    var participants = Math.max(1, Number(participantsInput.value) || 1);
-    if (!email) {
-      formMsg.textContent = 'Please enter your email address.';
-      formMsg.className = 'form-msg error';
-      return;
-    }
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Registering…';
-    apiPost({
-      action: 'register',
-      email: email,
-      bookings: selections.map(function (s) { return { tourId: s.tourId, slot: s.slot, participants: participants }; }),
-    }).then(function (res) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Register';
-      if (!res.ok && !(res.results && res.results.some(function (r) { return r.ok; }))) {
-        formMsg.textContent = (res.error) || 'Registration failed — please try again.';
-        formMsg.className = 'form-msg error';
-        return;
-      }
-      var failed = (res.results || []).filter(function (r) { return !r.ok; });
-      if (failed.length) {
-        formMsg.textContent = 'Some picks could not be booked: ' + failed.map(function (f) { return formatSlot(f.slot) + ' (' + f.error + ')'; }).join('; ');
-        formMsg.className = 'form-msg error';
-      }
-      showConfirmation(res, email);
-      selections = [];
-      refreshStatus();
-    }).catch(function () {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Register';
-      formMsg.textContent = 'Network error — please try again.';
-      formMsg.className = 'form-msg error';
-    });
-  });
-
-  function showConfirmation(res, email) {
-    var confirmed = (res.results || []).filter(function (r) { return r.ok; });
-    if (!confirmed.length) return;
-    bookingPanel.hidden = true;
-    confirmPanel.hidden = false;
-    confirmMeeting.textContent = 'Day ' + res.activeDay + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
-      ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each tour start time. Please screenshot this page as your confirmation.';
-    confirmList.innerHTML = '';
-    confirmed.forEach(function (c) {
-      var li = document.createElement('li');
-      li.textContent = c.tourName + ' — ' + formatSlot(c.slot);
-      confirmList.appendChild(li);
-    });
-  }
-
-  newRegBtn.addEventListener('click', function () {
-    confirmPanel.hidden = true;
-    emailInput.value = '';
-    participantsInput.value = '1';
-    formMsg.textContent = '';
-  });
 
   // --- Edit mode (tour name/capacity/short description) — opened from
-  // inside the User panel now, not a standalone top-level button, so
-  // participants never see it. ---
+  // inside the User panel, so participants never see it. ---
   var editModal = document.getElementById('editModal');
   var editFields = document.getElementById('editFields');
   var editCancel = document.getElementById('editCancel');
@@ -204,7 +47,7 @@
       block.innerHTML =
         '<div class="edit-field"><label>Name</label><input type="text" class="f-name" value="' + escapeHtml(tour.name) + '"></div>' +
         '<div class="edit-field"><label>Capacity per slot</label><input type="number" class="f-capacity" value="' + tour.capacity + '" min="1"></div>' +
-        '<div class="edit-field"><label>Short description (shown on this card)</label><textarea class="f-desc">' + escapeHtml(tour.shortDescription || '') + '</textarea></div>';
+        '<div class="edit-field"><label>Short description (shown on the registration page)</label><textarea class="f-desc">' + escapeHtml(tour.shortDescription || '') + '</textarea></div>';
       editFields.appendChild(block);
     });
     editModal.hidden = false;
