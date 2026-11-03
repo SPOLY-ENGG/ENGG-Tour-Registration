@@ -26,6 +26,18 @@
   var confirmMeeting = document.getElementById('confirmMeeting');
   var confirmList = document.getElementById('confirmList');
   var newRegBtn = document.getElementById('newRegBtn');
+  var slotNotice = document.getElementById('slotNotice');
+
+  var SLOT_FULL_MESSAGE = 'Thank you for your interest! This time slot is full — please choose a different time slot, or register for a different tour.';
+
+  function showSlotNotice(message) {
+    slotNotice.textContent = message;
+    slotNotice.hidden = false;
+  }
+
+  function hideSlotNotice() {
+    slotNotice.hidden = true;
+  }
 
   function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
 
@@ -67,8 +79,7 @@
       var vacancy = tour.capacity - booked;
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'slot';
-      btn.disabled = vacancy <= 0;
+      btn.className = 'slot' + (vacancy <= 0 ? ' full' : '');
       var isSelected = selections.some(function (s) { return s.slot === slot; });
       if (isSelected) btn.classList.add('selected');
       var pct = Math.max(0, Math.min(100, (booked / tour.capacity) * 100));
@@ -86,9 +97,19 @@
     var existingIdx = selections.findIndex(function (s) { return s.slot === slot; });
     if (existingIdx !== -1) {
       selections.splice(existingIdx, 1);
-    } else {
-      selections.push({ slot: slot });
+      hideSlotNotice();
+      render();
+      return;
     }
+    var tour = currentTour();
+    var booked = statusData.counts[statusData.activeDay][tour.id][slot] || 0;
+    var vacancy = tour.capacity - booked;
+    if (vacancy <= 0) {
+      showSlotNotice(SLOT_FULL_MESSAGE);
+      return;
+    }
+    hideSlotNotice();
+    selections.push({ slot: slot });
     render();
   }
 
