@@ -49,6 +49,13 @@
 
   function render() {
     var tour = currentTour();
+    if (!statusData.activeDay) {
+      dayBadge.textContent = 'Not open today';
+      slotGrid.innerHTML = '';
+      bookingPanel.hidden = true;
+      statusLine.textContent = 'Tour registration is only open on 7–9 Jan 2027. Please come back during the event.';
+      return;
+    }
     dayBadge.textContent = 'Day ' + statusData.activeDay;
     slotGrid.innerHTML = '';
     statusData.slots.forEach(function (slot) {

@@ -23,7 +23,7 @@
   function refreshStatus() {
     return apiGet({ action: 'status' }).then(function (data) {
       statusData = data;
-      dayBadge.textContent = 'Day ' + statusData.activeDay;
+      dayBadge.textContent = statusData.activeDay ? 'Day ' + statusData.activeDay : 'Not open today';
     }).catch(function () {
       dayBadge.textContent = 'Day –';
     });
@@ -95,7 +95,6 @@
   var userModal = document.getElementById('userModal');
   var userMsg = document.getElementById('userMsg');
   var userStatusRoot = document.getElementById('userStatusRoot');
-  var setDayBtn = document.getElementById('setDayBtn');
   var userClose = document.getElementById('userClose');
 
   userBtn.addEventListener('click', function () {
@@ -105,8 +104,6 @@
     userMsg.textContent = '';
     renderUserStatus();
     userModal.hidden = false;
-    var radios = userModal.querySelectorAll('input[name="dayPick"]');
-    radios.forEach(function (r) { r.checked = Number(r.value) === statusData.activeDay; });
   });
 
   userClose.addEventListener('click', function () { userModal.hidden = true; });
@@ -201,28 +198,6 @@
     });
     userStatusRoot.innerHTML = html;
   }
-
-  setDayBtn.addEventListener('click', function () {
-    var picked = userModal.querySelector('input[name="dayPick"]:checked');
-    if (!picked) { userMsg.textContent = 'Pick a day first.'; userMsg.className = 'form-msg error'; return; }
-    var pw = userModal.dataset.password;
-    setDayBtn.disabled = true;
-    apiPost({ action: 'setActiveDay', password: pw, day: picked.value }).then(function (res) {
-      setDayBtn.disabled = false;
-      if (!res.ok) {
-        userMsg.textContent = res.error || 'Could not set active day.';
-        userMsg.className = 'form-msg error';
-        return;
-      }
-      userMsg.textContent = 'Active day set to Day ' + res.activeDay + '.';
-      userMsg.className = 'form-msg ok';
-      refreshStatus().then(renderUserStatus);
-    }).catch(function () {
-      setDayBtn.disabled = false;
-      userMsg.textContent = 'Network error — please try again.';
-      userMsg.className = 'form-msg error';
-    });
-  });
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
