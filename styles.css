@@ -297,6 +297,13 @@ h1 {
   font: inherit;
 }
 
+.field-hint {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: var(--warn);
+  font-weight: 600;
+}
+
 .form-msg {
   margin-top: 10px;
   font-size: 0.9rem;

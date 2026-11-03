@@ -18,7 +18,9 @@
   var selectionList = document.getElementById('selectionList');
   var emailInput = document.getElementById('emailInput');
   var participantsInput = document.getElementById('participantsInput');
+  var participantsWarning = document.getElementById('participantsWarning');
   var submitBtn = document.getElementById('submitBtn');
+  var MAX_PARTICIPANTS = 5;
   var formMsg = document.getElementById('formMsg');
   var confirmPanel = document.getElementById('confirmPanel');
   var confirmMeeting = document.getElementById('confirmMeeting');
@@ -138,6 +140,12 @@
       formMsg.className = 'form-msg error';
       return;
     }
+    if (participants > MAX_PARTICIPANTS) {
+      participantsWarning.hidden = false;
+      formMsg.textContent = 'You can only enter up to ' + MAX_PARTICIPANTS + ' participants.';
+      formMsg.className = 'form-msg error';
+      return;
+    }
     submitBtn.disabled = true;
     submitBtn.textContent = 'Registering…';
     apiPost({
@@ -148,7 +156,8 @@
       submitBtn.disabled = false;
       submitBtn.textContent = 'Register';
       if (!res.ok && !(res.results && res.results.some(function (r) { return r.ok; }))) {
-        formMsg.textContent = (res.error) || 'Registration failed — please try again.';
+        var firstError = res.results && res.results.length && res.results[0].error;
+        formMsg.textContent = res.error || firstError || 'Registration failed — please try again.';
         formMsg.className = 'form-msg error';
         return;
       }
@@ -182,6 +191,10 @@
       confirmList.appendChild(li);
     });
   }
+
+  participantsInput.addEventListener('input', function () {
+    participantsWarning.hidden = Number(participantsInput.value) <= MAX_PARTICIPANTS;
+  });
 
   newRegBtn.addEventListener('click', function () {
     confirmPanel.hidden = true;

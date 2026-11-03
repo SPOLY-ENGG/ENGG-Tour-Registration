@@ -32,8 +32,9 @@
       <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email">
     </div>
     <div class="field-row">
-      <label for="participantsInput">Number of participants in your group</label>
-      <input type="number" id="participantsInput" min="1" value="1">
+      <label for="participantsInput">Number of participants in your group (max 5)</label>
+      <input type="number" id="participantsInput" min="1" max="5" value="1">
+      <p class="field-hint" id="participantsWarning" hidden>⚠ You can only enter up to 5 participants.</p>
     </div>
     <button type="button" class="btn primary" id="submitBtn">Register</button>
     <p class="form-msg" id="formMsg"></p>
