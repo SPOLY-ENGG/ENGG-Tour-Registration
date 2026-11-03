@@ -1,7 +1,7 @@
 (function () {
   // Paste your deployed Apps Script Web App URL here (see Code.gs header
   // comment for deployment steps). Ends in /exec.
-  var API_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzOmxD4-mc6ZfcQOvojFifrOhC0CfulUSYwZbsqWD2JCGI4aD9bunW0ZCf0S6Ju102GfQ/exec';
 
   var EDIT_PASSWORD_HINT = 'Ask the tour organiser for the edit password.';
   var USER_PASSWORD_HINT = 'Ask the tour organiser for the user password.';
