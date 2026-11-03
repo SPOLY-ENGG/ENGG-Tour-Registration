@@ -177,6 +177,14 @@
     });
   });
 
+  // Short tour names for the User panel's own tables/charts only — the
+  // public pages (register.html, tours-info.html, etc.) keep the full
+  // names. Falls back to the full name for any future tour id not listed.
+  var SHORT_TOUR_NAMES = { eee: 'EEE', mae: 'MAE', aero: 'Aero' };
+  function shortTourName(tour) {
+    return SHORT_TOUR_NAMES[tour.id] || tour.name;
+  }
+
   // Sum of visitors for one tour across every slot on a given day.
   function dayTourTotal(day, tourId) {
     var sum = 0;
@@ -189,7 +197,7 @@
     [1, 2, 3].forEach(function (day) {
       html += '<h3>Day ' + day + (day === statusData.activeDay ? ' (active)' : '') + '</h3>';
       html += '<table class="status-table"><thead><tr><th>Slot</th>';
-      statusData.tours.forEach(function (t) { html += '<th>' + t.name + '</th>'; });
+      statusData.tours.forEach(function (t) { html += '<th>' + shortTourName(t) + '</th>'; });
       html += '</tr></thead><tbody>';
       statusData.slots.forEach(function (slot) {
         html += '<tr><td>' + formatSlot(slot) + '</td>';
@@ -225,7 +233,7 @@
   function buildCompilationTable() {
     var html = '<h3 style="margin-top:28px;">Compilation — all 3 days</h3>';
     html += '<table class="status-table"><thead><tr><th>Day</th>';
-    statusData.tours.forEach(function (t) { html += '<th>' + t.name + '</th>'; });
+    statusData.tours.forEach(function (t) { html += '<th>' + shortTourName(t) + '</th>'; });
     html += '<th>All Tours</th></tr></thead><tbody>';
 
     var tourGrandTotals = statusData.tours.map(function () { return 0; });
@@ -297,7 +305,7 @@
       svg += '<polyline points="' + points + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>';
       values.forEach(function (v, i) {
         svg += '<circle cx="' + xAt(i) + '" cy="' + yAt(v) + '" r="3" fill="' + color + '" stroke="var(--card)" stroke-width="1.5">' +
-          '<title>' + tours[si].name + ' — ' + formatSlot(slots[i]) + ': ' + v + ' visitor(s)</title></circle>';
+          '<title>' + shortTourName(tours[si]) + ' — ' + formatSlot(slots[i]) + ': ' + v + ' visitor(s)</title></circle>';
       });
     });
 
@@ -307,7 +315,7 @@
       tours.map(function (t, i) {
         var color = CHART_SERIES_COLORS[i % CHART_SERIES_COLORS.length];
         return '<span style="display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--muted);">' +
-          '<span style="width:10px; height:10px; border-radius:50%; background:' + color + '; display:inline-block;"></span>' + t.name + '</span>';
+          '<span style="width:10px; height:10px; border-radius:50%; background:' + color + '; display:inline-block;"></span>' + shortTourName(t) + '</span>';
       }).join('') + '</div>';
 
     return '<div style="margin-bottom:24px;"><p class="muted" style="margin:0 0 4px;">Day ' + day + '</p>' + legend + svg + '</div>';
