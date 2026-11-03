@@ -49,19 +49,15 @@
     statusData.tours.forEach(function (tour) {
       var card = document.createElement('section');
       card.className = 'tour-card';
-      var videoHtml = '';
-      if (tour.videoUrl) {
-        if (/youtube\.com|youtu\.be/.test(tour.videoUrl)) {
-          var embed = tour.videoUrl.replace('watch?v=', 'embed/');
-          videoHtml = '<iframe src="' + embed + '" allowfullscreen loading="lazy"></iframe>';
-        } else {
-          videoHtml = '<video src="' + tour.videoUrl + '" controls></video>';
-        }
-      }
+      var tourUrl = 'tour.html?id=' + encodeURIComponent(tour.id);
+      var thumbHtml = tour.heroImageUrl
+        ? '<a href="' + tourUrl + '"><img class="tour-card-thumb" src="' + tour.heroImageUrl + '" alt=""></a>'
+        : '';
       card.innerHTML =
-        '<h2>' + tour.name + '</h2>' +
-        videoHtml +
-        '<p class="desc">' + (tour.description || '') + '</p>' +
+        '<h2><a href="' + tourUrl + '">' + tour.name + '</a></h2>' +
+        thumbHtml +
+        '<p class="desc">' + (tour.shortDescription || '') + '</p>' +
+        '<p><a class="more-link" href="' + tourUrl + '">Learn more about this tour →</a></p>' +
         '<div class="slot-grid" data-tour="' + tour.id + '"></div>';
       toursRoot.appendChild(card);
 
@@ -189,19 +185,14 @@
     formMsg.textContent = '';
   });
 
-  // --- Edit mode ---
-  var editBtn = document.getElementById('editBtn');
+  // --- Edit mode (tour name/capacity/short description) — opened from
+  // inside the User panel now, not a standalone top-level button, so
+  // participants never see it. ---
   var editModal = document.getElementById('editModal');
   var editFields = document.getElementById('editFields');
   var editCancel = document.getElementById('editCancel');
   var editSave = document.getElementById('editSave');
   var editMsg = document.getElementById('editMsg');
-
-  editBtn.addEventListener('click', function () {
-    var pw = window.prompt('Enter the edit password:');
-    if (pw === null) return;
-    openEditModal(pw);
-  });
 
   function openEditModal(pw) {
     editMsg.textContent = '';
@@ -213,8 +204,7 @@
       block.innerHTML =
         '<div class="edit-field"><label>Name</label><input type="text" class="f-name" value="' + escapeHtml(tour.name) + '"></div>' +
         '<div class="edit-field"><label>Capacity per slot</label><input type="number" class="f-capacity" value="' + tour.capacity + '" min="1"></div>' +
-        '<div class="edit-field"><label>Description</label><textarea class="f-desc">' + escapeHtml(tour.description || '') + '</textarea></div>' +
-        '<div class="edit-field"><label>Video URL (YouTube or direct video link)</label><input type="text" class="f-video" value="' + escapeHtml(tour.videoUrl || '') + '"></div>';
+        '<div class="edit-field"><label>Short description (shown on this card)</label><textarea class="f-desc">' + escapeHtml(tour.shortDescription || '') + '</textarea></div>';
       editFields.appendChild(block);
     });
     editModal.hidden = false;
@@ -235,8 +225,7 @@
         tourId: block.dataset.tourId,
         name: block.querySelector('.f-name').value,
         capacity: block.querySelector('.f-capacity').value,
-        description: block.querySelector('.f-desc').value,
-        videoUrl: block.querySelector('.f-video').value,
+        shortDescription: block.querySelector('.f-desc').value,
       });
     })).then(function (results) {
       editSave.disabled = false;
@@ -278,6 +267,75 @@
   });
 
   userClose.addEventListener('click', function () { userModal.hidden = true; });
+
+  // Edit/Download/Reset all require the separate, stricter edit password,
+  // even though the viewer already unlocked the User panel with the user
+  // password — a second confirmation layer for these destructive/admin
+  // actions. Passwords are verified server-side only; nothing here checks
+  // or stores the actual value.
+  document.getElementById('openEditBtn').addEventListener('click', function () {
+    var pw = window.prompt('Enter the edit password:');
+    if (pw === null) return;
+    openEditModal(pw);
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', function () {
+    var pw = window.prompt('Enter the edit password:');
+    if (pw === null) return;
+    userMsg.textContent = 'Preparing download…';
+    userMsg.className = 'form-msg';
+    apiPost({ action: 'exportRegistrations', password: pw }).then(function (res) {
+      if (!res.ok) {
+        userMsg.textContent = res.error || 'Could not download registrations.';
+        userMsg.className = 'form-msg error';
+        return;
+      }
+      downloadRegistrationsCsv(res.rows);
+      userMsg.textContent = 'Downloaded ' + res.rows.length + ' registration row(s).';
+      userMsg.className = 'form-msg ok';
+    }).catch(function () {
+      userMsg.textContent = 'Network error — please try again.';
+      userMsg.className = 'form-msg error';
+    });
+  });
+
+  function downloadRegistrationsCsv(rows) {
+    var header = ['Email', 'Date/Time of Registration', 'Day', 'Tour', 'Time Slot', 'Participants'];
+    function csvCell(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
+    var lines = [header.map(csvCell).join(',')];
+    rows.forEach(function (r) {
+      lines.push([r.email, r.timestamp, r.day, r.tourName, r.slot, r.participants].map(csvCell).join(','));
+    });
+    var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'tour-registrations.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    var pw = window.prompt('Enter the edit password:');
+    if (pw === null) return;
+    var sure = window.confirm('⚠ WARNING: This will permanently delete ALL registration data for every day and every tour. This cannot be undone.\n\nAre you absolutely sure you want to reset everything?');
+    if (!sure) return;
+    apiPost({ action: 'resetAllData', password: pw }).then(function (res) {
+      if (!res.ok) {
+        userMsg.textContent = res.error || 'Could not reset data.';
+        userMsg.className = 'form-msg error';
+        return;
+      }
+      userMsg.textContent = 'All registration data has been reset.';
+      userMsg.className = 'form-msg ok';
+      refreshStatus().then(renderUserStatus);
+    }).catch(function () {
+      userMsg.textContent = 'Network error — please try again.';
+      userMsg.className = 'form-msg error';
+    });
+  });
 
   function renderUserStatus() {
     var html = '';
