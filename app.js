@@ -177,6 +177,13 @@
     });
   });
 
+  // Sum of visitors for one tour across every slot on a given day.
+  function dayTourTotal(day, tourId) {
+    var sum = 0;
+    statusData.slots.forEach(function (slot) { sum += statusData.counts[day][tourId][slot] || 0; });
+    return sum;
+  }
+
   function renderUserStatus() {
     var html = '';
     [1, 2, 3].forEach(function (day) {
@@ -194,8 +201,16 @@
         });
         html += '</tr>';
       });
+      // Total row — each tour's visitor count added up across the whole day.
+      html += '<tr style="font-weight:700;"><td>Total</td>';
+      statusData.tours.forEach(function (t) {
+        html += '<td>' + dayTourTotal(day, t.id) + '</td>';
+      });
+      html += '</tr>';
       html += '</tbody></table>';
     });
+
+    html += buildCompilationTable();
 
     html += '<h3 style="margin-top:28px;">Visitors per time slot</h3>';
     [1, 2, 3].forEach(function (day) {
@@ -203,6 +218,38 @@
     });
 
     userStatusRoot.innerHTML = html;
+  }
+
+  // One combined table: each tour's total across all 3 days, each day's
+  // total across all tours, and the grand total of every tour on every day.
+  function buildCompilationTable() {
+    var html = '<h3 style="margin-top:28px;">Compilation — all 3 days</h3>';
+    html += '<table class="status-table"><thead><tr><th>Day</th>';
+    statusData.tours.forEach(function (t) { html += '<th>' + t.name + '</th>'; });
+    html += '<th>All Tours</th></tr></thead><tbody>';
+
+    var tourGrandTotals = statusData.tours.map(function () { return 0; });
+    var allDaysGrandTotal = 0;
+
+    [1, 2, 3].forEach(function (day) {
+      html += '<tr><td>Day ' + day + '</td>';
+      var dayTotal = 0;
+      statusData.tours.forEach(function (t, i) {
+        var total = dayTourTotal(day, t.id);
+        tourGrandTotals[i] += total;
+        dayTotal += total;
+        html += '<td>' + total + '</td>';
+      });
+      allDaysGrandTotal += dayTotal;
+      html += '<td style="font-weight:700;">' + dayTotal + '</td></tr>';
+    });
+
+    html += '<tr style="font-weight:700;"><td>Total (all days)</td>';
+    statusData.tours.forEach(function (t, i) { html += '<td>' + tourGrandTotals[i] + '</td>'; });
+    html += '<td>' + allDaysGrandTotal + '</td></tr>';
+
+    html += '</tbody></table>';
+    return html;
   }
 
   // Categorical palette slots 1–3 (dark-mode steps), validated all-pairs
