@@ -11,7 +11,7 @@
   <header class="top">
     <div>
       <h1>Engineering Open House Tour Registration</h1>
-      <p class="sub">Register for the Electrical &amp; Electronic, Mechanical/Mechatronics/Robotics, and Aero tours below.</p>
+      <p class="sub">Pick what you'd like to do below.</p>
     </div>
     <div class="top-actions">
       <span class="day-badge" id="dayBadge">Day –</span>
@@ -19,32 +19,47 @@
     </div>
   </header>
 
-  <p class="status-line" id="statusLine">Loading tour information…</p>
+  <nav class="home-grid">
+    <a class="home-card tint-1" href="register.html?tour=eee">
+      <span class="home-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"></path><path d="M9 13l2 2 4-4"></path></svg>
+      </span>
+      <h2>Register for EEE Tour</h2>
+      <p>Electrical and Electronic (EEE) Tour — pick a time slot and register.</p>
+    </a>
 
-  <main id="toursRoot"></main>
+    <a class="home-card tint-2" href="register.html?tour=mae">
+      <span class="home-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"></path><path d="M9 13l2 2 4-4"></path></svg>
+      </span>
+      <h2>Register for MAE Tour</h2>
+      <p>Mechanical, Mechatronics and Robotic (MAE) Tour — pick a time slot and register.</p>
+    </a>
 
-  <section class="panel booking-panel" id="bookingPanel" hidden>
-    <h2>Your selections</h2>
-    <ul class="selection-list" id="selectionList"></ul>
-    <div class="field-row">
-      <label for="emailInput">Your email (the person attending)</label>
-      <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email">
-    </div>
-    <div class="field-row">
-      <label for="participantsInput">Number of participants in your group</label>
-      <input type="number" id="participantsInput" min="1" value="1">
-    </div>
-    <button type="button" class="btn primary" id="submitBtn">Register</button>
-    <p class="form-msg" id="formMsg"></p>
-  </section>
+    <a class="home-card tint-3" href="register.html?tour=aero">
+      <span class="home-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"></path><path d="M9 13l2 2 4-4"></path></svg>
+      </span>
+      <h2>Register for Aero Tour</h2>
+      <p>Aero Tour — pick a time slot and register.</p>
+    </a>
 
-  <section class="panel confirm-panel" id="confirmPanel" hidden>
-    <h2>✅ Registration confirmed</h2>
-    <p id="confirmMeeting"></p>
-    <ul id="confirmList"></ul>
-    <p class="muted">Please show this screen when joining each tour.</p>
-    <button type="button" class="btn ghost" id="newRegBtn">Make another registration</button>
-  </section>
+    <a class="home-card tint-1" href="tours-info.html">
+      <span class="home-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9.5l-2 5-5 2 2-5 5-2z"></path></svg>
+      </span>
+      <h2>Tour Information</h2>
+      <p>What each tour covers, with photos and videos.</p>
+    </a>
+
+    <a class="home-card tint-2" href="course-info.html">
+      <span class="home-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5z"></path><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path><path d="M22 9v6"></path></svg>
+      </span>
+      <h2>Course Information</h2>
+      <p>Learn about the engineering courses behind these tours.</p>
+    </a>
+  </nav>
 
   <footer class="site-footer">Built with vanilla HTML, CSS &amp; JavaScript — no frameworks, no build step.</footer>
 </div>
