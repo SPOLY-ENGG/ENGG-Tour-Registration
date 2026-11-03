@@ -26,7 +26,7 @@ body {
 .wrap {
   max-width: 980px;
   margin: 0 auto;
-  padding: 24px 18px 60px;
+  padding: 16px 16px 20px;
 }
 
 .top {
@@ -315,8 +315,8 @@ h1 {
 .site-footer {
   text-align: center;
   color: var(--muted);
-  font-size: 0.82rem;
-  margin-top: 40px;
+  font-size: 0.75rem;
+  margin-top: 16px;
 }
 
 .modal-backdrop {
@@ -411,8 +411,8 @@ h1 {
 .home-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .home-card {
@@ -466,28 +466,34 @@ h1 {
 .home-card.tint-3 { background: #fff3da; }
 
 @media (max-width: 600px) {
-  .top { flex-direction: column; }
+  .top { flex-direction: column; gap: 8px; }
+  h1 { font-size: 1.3rem; margin-bottom: 2px; }
+  .sub { font-size: 0.85rem; }
+  .top-actions { gap: 6px; }
+  .day-badge, .btn { padding: 5px 12px; font-size: 0.82rem; }
 }
 
 @media (max-width: 700px) {
   .home-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 6px;
+    margin-top: 8px;
   }
   .home-card {
-    padding: 10px 8px;
-    gap: 4px;
+    padding: 8px 6px;
+    gap: 3px;
   }
   .home-card-icon {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
   .home-card-icon svg {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
   }
   .home-card h2 {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
+    line-height: 1.15;
   }
   .home-card p {
     display: none;
