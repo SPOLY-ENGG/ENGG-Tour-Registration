@@ -15,7 +15,6 @@
     </div>
     <div class="top-actions">
       <span class="day-badge" id="dayBadge">Day –</span>
-      <button type="button" class="btn ghost" id="editBtn">✎ Edit</button>
       <button type="button" class="btn ghost" id="userBtn">👤 User</button>
     </div>
   </header>
@@ -50,7 +49,7 @@
   <footer class="site-footer">Built with vanilla HTML, CSS &amp; JavaScript — no frameworks, no build step.</footer>
 </div>
 
-<!-- Edit mode modal -->
+<!-- Edit mode modal (tour name/capacity/short description) -->
 <div class="modal-backdrop" id="editModal" hidden>
   <div class="modal">
     <h2>Edit tour content</h2>
@@ -73,6 +72,11 @@
       <label><input type="radio" name="dayPick" value="2"> Day 2</label>
       <label><input type="radio" name="dayPick" value="3"> Day 3</label>
       <button type="button" class="btn primary" id="setDayBtn">Set active day</button>
+    </div>
+    <div class="user-admin-actions">
+      <button type="button" class="btn ghost" id="openEditBtn">✎ Edit tour content</button>
+      <button type="button" class="btn ghost" id="downloadBtn">⬇ Download registrations</button>
+      <button type="button" class="btn warn" id="resetBtn">⚠ Reset all data</button>
     </div>
     <p class="form-msg" id="userMsg"></p>
     <div id="userStatusRoot"></div>
