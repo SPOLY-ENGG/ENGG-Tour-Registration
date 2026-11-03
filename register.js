@@ -28,8 +28,10 @@
   function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
 
   function apiGet(p) {
-    var url = API_URL + '?' + Object.keys(p).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&');
-    return fetch(url).then(function (r) { return r.json(); });
+    // _ts busts any browser/CDN caching of this GET request — without it,
+    // vacancy counts can appear stale right after a registration.
+    var url = API_URL + '?' + Object.keys(p).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&') + '&_ts=' + Date.now();
+    return fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); });
   }
 
   function apiPost(body) {

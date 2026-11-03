@@ -16,8 +16,9 @@
   var statusData = null;
 
   function apiGet(params) {
-    var url = API_URL + '?' + Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
-    return fetch(url).then(function (r) { return r.json(); });
+    // _ts busts any browser/CDN caching of this GET request.
+    var url = API_URL + '?' + Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&') + '&_ts=' + Date.now();
+    return fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); });
   }
 
   function apiPost(body) {

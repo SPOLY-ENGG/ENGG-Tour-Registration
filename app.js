@@ -8,8 +8,11 @@
   var dayBadge = document.getElementById('dayBadge');
 
   function apiGet(params) {
-    var url = API_URL + '?' + Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
-    return fetch(url).then(function (r) { return r.json(); });
+    // _ts busts any browser/CDN caching of this GET request — without it, an
+    // admin action (reset, edit, a new registration) can appear to have no
+    // effect because the next status fetch returns a stale cached response.
+    var url = API_URL + '?' + Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&') + '&_ts=' + Date.now();
+    return fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); });
   }
 
   function apiPost(body) {
