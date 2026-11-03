@@ -457,6 +457,39 @@ h1 {
   min-width: 0;
 }
 
+/* Used where a tile isn't itself the link (e.g. Tour Information's icon
+   nav, which also needs a separate edit button) — .home-card-link carries
+   the row layout .home-card itself carries when it IS the link. */
+.home-card-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.home-card-edit {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #16181d;
+  font-size: 0.85rem;
+}
+
+.home-card-edit:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
 .home-card h2 {
   margin: 0;
   font-size: 0.88rem;

@@ -3,6 +3,7 @@
   var API_URL = 'https://script.google.com/macros/s/AKfycbzOmxD4-mc6ZfcQOvojFifrOhC0CfulUSYwZbsqWD2JCGI4aD9bunW0ZCf0S6Ju102GfQ/exec';
 
   var statusLine = document.getElementById('statusLine');
+  var tourIconNav = document.getElementById('tourIconNav');
   var toursRoot = document.getElementById('toursRoot');
   var editModal = document.getElementById('editModal');
   var editCancel = document.getElementById('editCancel');
@@ -43,12 +44,41 @@
     });
   }
 
+  var TOUR_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8.5" cy="9.5" r="1.5"></circle><path d="M21 16l-5.5-5.5L7 18"></path></svg>';
+  var TINTS = ['tint-1', 'tint-2', 'tint-3'];
+
+  function renderIconNav() {
+    tourIconNav.innerHTML = '';
+    statusData.tours.forEach(function (tour, i) {
+      var tile = document.createElement('div');
+      tile.className = 'home-card ' + TINTS[i % TINTS.length];
+      tile.innerHTML =
+        '<a class="home-card-link" href="#tour-' + tour.id + '">' +
+        '<span class="home-card-icon">' + TOUR_ICON + '</span>' +
+        '<span class="home-card-text"><h2>' + tour.name + '</h2></span>' +
+        '</a>' +
+        '<button type="button" class="btn ghost home-card-edit" data-tour-id="' + tour.id + '" title="Edit ' + tour.name + '">✎</button>';
+      tourIconNav.appendChild(tile);
+    });
+
+    tourIconNav.querySelectorAll('.home-card-edit').forEach(function (btn) {
+      btn.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        openEditModal(btn.dataset.tourId);
+      });
+    });
+  }
+
   function render() {
+    renderIconNav();
+
     toursRoot.innerHTML = '';
     statusData.tours.forEach(function (tour) {
       var registerUrl = 'register.html?tour=' + encodeURIComponent(tour.id);
       var card = document.createElement('section');
       card.className = 'tour-card';
+      card.id = 'tour-' + tour.id;
       card.innerHTML =
         '<div class="top"><h2>' + tour.name + '</h2>' +
         '<button type="button" class="btn ghost edit-tour-btn" data-tour-id="' + tour.id + '">✎ Edit</button></div>' +
