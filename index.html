@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engineering Open House Tour Registration</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Engineering Open House Tour Registration</h1>
+      <p class="sub">Register for the Electrical &amp; Electronic, Mechanical/Mechatronics/Robotics, and Aero tours below.</p>
+    </div>
+    <div class="top-actions">
+      <span class="day-badge" id="dayBadge">Day –</span>
+      <button type="button" class="btn ghost" id="editBtn">✎ Edit</button>
+      <button type="button" class="btn ghost" id="userBtn">👤 User</button>
+    </div>
+  </header>
+
+  <p class="status-line" id="statusLine">Loading tour information…</p>
+
+  <main id="toursRoot"></main>
+
+  <section class="panel booking-panel" id="bookingPanel" hidden>
+    <h2>Your selections</h2>
+    <ul class="selection-list" id="selectionList"></ul>
+    <div class="field-row">
+      <label for="emailInput">Your email (the person attending)</label>
+      <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="field-row">
+      <label for="participantsInput">Number of participants in your group</label>
+      <input type="number" id="participantsInput" min="1" value="1">
+    </div>
+    <button type="button" class="btn primary" id="submitBtn">Register</button>
+    <p class="form-msg" id="formMsg"></p>
+  </section>
+
+  <section class="panel confirm-panel" id="confirmPanel" hidden>
+    <h2>✅ Registration confirmed</h2>
+    <p id="confirmMeeting"></p>
+    <ul id="confirmList"></ul>
+    <p class="muted">A confirmation email has been sent to your address. Please show this screen or the email when joining each tour.</p>
+    <button type="button" class="btn ghost" id="newRegBtn">Make another registration</button>
+  </section>
+
+  <footer class="site-footer">Built with vanilla HTML, CSS &amp; JavaScript — no frameworks, no build step.</footer>
+</div>
+
+<!-- Edit mode modal -->
+<div class="modal-backdrop" id="editModal" hidden>
+  <div class="modal">
+    <h2>Edit tour content</h2>
+    <div id="editFields"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="editCancel">Cancel</button>
+      <button type="button" class="btn primary" id="editSave">Save changes</button>
+    </div>
+    <p class="form-msg" id="editMsg"></p>
+  </div>
+</div>
+
+<!-- User (admin) modal -->
+<div class="modal-backdrop" id="userModal" hidden>
+  <div class="modal wide">
+    <h2>Overall registration status</h2>
+    <div class="day-control">
+      <span>Active day for visitor registration:</span>
+      <label><input type="radio" name="dayPick" value="1"> Day 1</label>
+      <label><input type="radio" name="dayPick" value="2"> Day 2</label>
+      <label><input type="radio" name="dayPick" value="3"> Day 3</label>
+      <button type="button" class="btn primary" id="setDayBtn">Set active day</button>
+    </div>
+    <p class="form-msg" id="userMsg"></p>
+    <div id="userStatusRoot"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="userClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
