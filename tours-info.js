@@ -200,7 +200,7 @@
         (tour.heroImageUrl ? '<img class="tour-detail-hero" src="' + tour.heroImageUrl + '" alt="">' : '') +
         '<p class="desc">' + (tour.detailDescription || tour.shortDescription || '') + '</p>' +
         highlightsHtml(tour) +
-        '<p><a class="more-link" href="' + registerUrl + '">Register for this tour →</a></p>';
+        '<p><a class="more-link" href="' + registerUrl + '">Register for this discovery →</a></p>';
       toursRoot.appendChild(card);
     });
 
