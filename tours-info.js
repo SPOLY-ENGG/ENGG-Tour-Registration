@@ -74,24 +74,28 @@
   // this one-time event's physical setup (which building, which activities),
   // not something that needs admin re-editing through the site, so it's kept
   // here rather than added to the Tours sheet/editTour schema.
+  // Placeholder photos (Picsum, free to hotlink, same convention the tour
+  // hero images use elsewhere in this file) — a stand-in until real photos
+  // of each activity are available; swap the `img` URL below for a real one
+  // per activity whenever you have it.
   var TOUR_HIGHLIGHTS = {
     mae: {
       location: 'Automation & Mechatronics Centre (AMC)',
       activities: [
-        { icon: 'robotDog', title: 'Hands-on Activity: Robot Dog', desc: 'Take the controls of a quadruped robot dog and see legged robotics in action.' },
-        { icon: 'robotArm', title: 'Hands-on Activity: Robot Arm', desc: 'Get behind the controls of an industrial robot arm and try a pick-and-place task yourself.' },
-        { icon: 'lift', title: 'Project: Lift Concept', desc: 'See a student-built lift system in action, demonstrating mechanical design and control concepts.' },
-        { icon: 'trophy', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects across mechanical, mechatronics, and robotics engineering.' },
-        { icon: 'gift', title: 'Door Gifts', desc: 'Drop by for a door gift — while stocks last!' },
+        { icon: 'robotDog', img: 'https://picsum.photos/seed/mae-robot-dog/240/240', title: 'Hands-on Activity: Robot Dog', desc: 'Take the controls of a quadruped robot dog and see legged robotics in action.' },
+        { icon: 'robotArm', img: 'https://picsum.photos/seed/mae-robot-arm/240/240', title: 'Hands-on Activity: Robot Arm', desc: 'Get behind the controls of an industrial robot arm and try a pick-and-place task yourself.' },
+        { icon: 'lift', img: 'https://picsum.photos/seed/mae-lift-project/240/240', title: 'Project: Lift Concept', desc: 'See a student-built lift system in action, demonstrating mechanical design and control concepts.' },
+        { icon: 'trophy', img: 'https://picsum.photos/seed/mae-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects across mechanical, mechatronics, and robotics engineering.' },
+        { icon: 'gift', img: 'https://picsum.photos/seed/mae-door-gift/240/240', title: 'Door Gifts', desc: 'Drop by for a door gift — while stocks last!' },
       ],
     },
     aero: {
       location: 'Aerohub',
       activities: [
-        { icon: 'jet', title: 'Aircraft & Flight Simulation Showcase', desc: 'See RSAF and commercial aircraft and helicopters up close, plus a live flight simulation showcase.' },
-        { icon: 'vr', title: 'VR Project Showcase', desc: 'Experience student-built virtual reality projects exploring aerospace engineering concepts.' },
-        { icon: 'drone', title: 'Hands-on Activity: Drone Obstacle Flying', desc: 'Take the controls and fly a drone through an obstacle course.' },
-        { icon: 'gift', title: 'Door Gifts', desc: 'Drop by for a door gift — while stocks last!' },
+        { icon: 'jet', img: 'https://picsum.photos/seed/aero-aircraft-showcase/240/240', title: 'Aircraft & Flight Simulation Showcase', desc: 'See RSAF and commercial aircraft and helicopters up close, plus a live flight simulation showcase.' },
+        { icon: 'vr', img: 'https://picsum.photos/seed/aero-vr-showcase/240/240', title: 'VR Project Showcase', desc: 'Experience student-built virtual reality projects exploring aerospace engineering concepts.' },
+        { icon: 'drone', img: 'https://picsum.photos/seed/aero-drone-flying/240/240', title: 'Hands-on Activity: Drone Obstacle Flying', desc: 'Take the controls and fly a drone through an obstacle course.' },
+        { icon: 'gift', img: 'https://picsum.photos/seed/aero-door-gift/240/240', title: 'Door Gifts', desc: 'Drop by for a door gift — while stocks last!' },
       ],
     },
   };
@@ -101,7 +105,10 @@
     if (!info) return '';
     var cards = info.activities.map(function (a) {
       return '<div class="highlight-card">' +
+        '<span class="highlight-media">' +
+        '<img src="' + a.img + '" alt="" loading="lazy">' +
         '<span class="highlight-icon">' + (ACTIVITY_ICONS[a.icon] || '') + '</span>' +
+        '</span>' +
         '<span class="highlight-card-text">' +
         '<h3>' + a.title + '</h3>' +
         '<p>' + a.desc + '</p>' +
