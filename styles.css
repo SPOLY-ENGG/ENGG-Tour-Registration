@@ -208,25 +208,22 @@ h1 {
 
 .highlight-card {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  flex-direction: column;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 14px;
+  overflow: hidden;
 }
 
 .highlight-card-text {
   min-width: 0;
+  padding: 14px;
 }
 
 .highlight-media {
   position: relative;
-  flex: 0 0 auto;
-  width: 84px;
-  height: 84px;
-  border-radius: 10px;
-  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   background: var(--surface);
 }
 
