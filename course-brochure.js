@@ -13,6 +13,7 @@
   var fTitle = document.getElementById('f-title');
   var fDescription = document.getElementById('f-description');
   var fPdf = document.getElementById('f-pdf');
+  var fView = document.getElementById('f-view');
 
   var currentBrochure = null;
 
@@ -31,12 +32,19 @@
     currentBrochure = brochure;
     brochureTitle.textContent = brochure.title || 'Course Brochure';
     document.title = (brochure.title || 'Course Brochure') + ' — Engineering Open House';
+    // viewUrl drives the inline preview, pdfUrl drives the Download button —
+    // these can point to different places (e.g. a Google Drive "preview"
+    // link for viewing, a direct file link for downloading). Falls back to
+    // pdfUrl for the preview if viewUrl isn't set, so older saved data (from
+    // before viewUrl existed) still shows something.
+    var viewUrl = brochure.viewUrl || brochure.pdfUrl;
     brochureRoot.innerHTML =
       '<p class="desc" style="white-space:pre-wrap; font-size:1.05rem;">' + (brochure.description || '') + '</p>' +
+      (viewUrl ? '<div class="brochure-viewer"><iframe src="' + viewUrl + '" title="Course Brochure PDF" loading="lazy"></iframe></div>' : '') +
       (brochure.pdfUrl
-        ? '<div class="brochure-viewer"><iframe src="' + brochure.pdfUrl + '" title="Course Brochure PDF" loading="lazy"></iframe></div>' +
-          '<p><a class="btn primary" href="' + brochure.pdfUrl + '" target="_blank" rel="noopener" download>⬇ Download Brochure (PDF)</a></p>'
-        : '<p class="muted">No brochure has been uploaded yet.</p>');
+        ? '<p><a class="btn primary" href="' + brochure.pdfUrl + '" target="_blank" rel="noopener" download>⬇ Download Brochure (PDF)</a></p>'
+        : '') +
+      (!viewUrl && !brochure.pdfUrl ? '<p class="muted">No brochure has been uploaded yet.</p>' : '');
   }
 
   // `page` piggybacks this page's traffic ping on the status request
@@ -55,6 +63,7 @@
     fTitle.value = (currentBrochure && currentBrochure.title) || '';
     fDescription.value = (currentBrochure && currentBrochure.description) || '';
     fPdf.value = (currentBrochure && currentBrochure.pdfUrl) || '';
+    fView.value = (currentBrochure && currentBrochure.viewUrl) || '';
     editModal.hidden = false;
     editModal.dataset.password = pw;
   });
@@ -71,6 +80,7 @@
       title: fTitle.value,
       description: fDescription.value,
       pdfUrl: fPdf.value,
+      viewUrl: fView.value,
     }).then(function (res) {
       editSave.disabled = false;
       editSave.textContent = 'Save changes';
@@ -81,7 +91,7 @@
       }
       editMsg.textContent = 'Saved.';
       editMsg.className = 'form-msg ok';
-      render({ title: fTitle.value, description: fDescription.value, pdfUrl: fPdf.value });
+      render({ title: fTitle.value, description: fDescription.value, pdfUrl: fPdf.value, viewUrl: fView.value });
       editModal.hidden = true;
     }).catch(function () {
       editSave.disabled = false;
