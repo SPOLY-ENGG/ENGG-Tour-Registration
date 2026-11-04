@@ -92,7 +92,7 @@
       activities: [],
     },
     mae: {
-      location: 'AMC W1314',
+      location: 'Advance Manufacturing Centre W1314',
       mapQuery: 'W13',
       activities: [
         { icon: 'robotDog', img: 'https://picsum.photos/seed/mae-robot-dog/240/240', title: 'Hands-on Activity: Robot Dog', desc: 'Take the controls of a quadruped robot dog and see legged robotics in action.' },
