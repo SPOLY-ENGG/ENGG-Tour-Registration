@@ -28,7 +28,7 @@
   var newRegBtn = document.getElementById('newRegBtn');
   var slotNotice = document.getElementById('slotNotice');
 
-  var SLOT_FULL_MESSAGE = 'Thank you for your interest! This time slot is full — please choose a different time slot, or register for a different tour.';
+  var SLOT_FULL_MESSAGE = 'Thank you for your interest! This time slot is full — please choose a different time slot, or register for a different discovery.';
 
   function showSlotNotice(message) {
     slotNotice.textContent = message;
@@ -69,7 +69,7 @@
       dayBadge.textContent = 'Not open today';
       slotGrid.innerHTML = '';
       bookingPanel.hidden = true;
-      statusLine.textContent = 'Tour registration is only open on 7–9 Jan 2027. Please come back during the event.';
+      statusLine.textContent = 'Discovery registration is only open on 7–9 Jan 2027. Please come back during the event.';
       return;
     }
     dayBadge.textContent = 'Day ' + statusData.activeDay;
@@ -129,7 +129,7 @@
   }
 
   function loadStatus() {
-    statusLine.textContent = 'Loading tour information…';
+    statusLine.textContent = 'Loading discovery information…';
     // `page` piggybacks this page's traffic ping on the status request
     // itself, instead of a separate POST — see Code.gs's doGet() comment.
     var params = { action: 'status' };
@@ -138,7 +138,7 @@
       statusData = data;
       var tour = currentTour();
       if (!tour) {
-        statusLine.textContent = 'Tour not found.';
+        statusLine.textContent = 'Discovery not found.';
         return;
       }
       tourTitle.textContent = tour.name;
@@ -147,12 +147,12 @@
       statusLine.textContent = '';
       render();
     }).catch(function () {
-      statusLine.textContent = 'Could not load tour data. Please check your connection and refresh.';
+      statusLine.textContent = 'Could not load discovery data. Please check your connection and refresh.';
     });
   }
 
   if (!tourId) {
-    statusLine.textContent = 'No tour specified. Go back and pick a tour to register for.';
+    statusLine.textContent = 'No discovery specified. Go back and pick a discovery to register for.';
   } else {
     loadStatus();
   }
@@ -208,7 +208,7 @@
     bookingPanel.hidden = true;
     confirmPanel.hidden = false;
     confirmMeeting.textContent = 'Day ' + res.activeDay + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
-      ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each tour start time. Please screenshot this page as your confirmation.';
+      ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each discovery start time. Please screenshot this page as your confirmation.';
     confirmList.innerHTML = '';
     confirmed.forEach(function (c) {
       var li = document.createElement('li');

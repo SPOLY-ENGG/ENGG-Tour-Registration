@@ -38,7 +38,7 @@
       statusLine.textContent = '';
       render();
     }).catch(function () {
-      statusLine.textContent = 'Could not load tour data. Please check your connection and refresh.';
+      statusLine.textContent = 'Could not load discovery data. Please check your connection and refresh.';
     });
   }
 

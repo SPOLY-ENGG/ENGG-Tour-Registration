@@ -145,7 +145,7 @@
   });
 
   function downloadRegistrationsCsv(rows) {
-    var header = ['Email', 'Date/Time of Registration', 'Day', 'Tour', 'Time Slot', 'Participants'];
+    var header = ['Email', 'Date/Time of Registration', 'Day', 'Discovery', 'Time Slot', 'Participants'];
     function csvCell(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
     var lines = [header.map(csvCell).join(',')];
     rows.forEach(function (r) {
@@ -155,7 +155,7 @@
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'tour-registrations.csv';
+    a.download = 'discovery-registrations.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -239,7 +239,7 @@
   // back to the raw tag itself for any page not listed (e.g. a future one).
   var PAGE_LABELS = {
     home: 'Home',
-    'tours-info': 'Tour Information',
+    'tours-info': 'Discovery Information',
     'course-info': 'Course Information',
     'course-brochure': 'Course Brochure',
     'register-eee': 'Register — EEE',
