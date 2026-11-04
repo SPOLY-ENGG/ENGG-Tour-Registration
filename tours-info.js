@@ -89,7 +89,11 @@
     eee: {
       location: 'T12101A-D',
       mapQuery: 'SP T12',
-      activities: [],
+      activities: [
+        { icon: 'star', img: 'https://picsum.photos/seed/eee-hands-on/240/240', title: 'Hands-on Activity: Circuit Building', desc: 'Build and test a simple circuit yourself under the guidance of our students and instructors.' },
+        { icon: 'trophy', img: 'https://picsum.photos/seed/eee-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects in electrical and electronic engineering, including IoT and embedded systems.' },
+        { icon: 'gift', img: 'https://picsum.photos/seed/eee-door-gift/240/240', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+      ],
     },
     mae: {
       location: 'Advance Manufacturing Centre W1314',
