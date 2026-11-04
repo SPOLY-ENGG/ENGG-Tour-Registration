@@ -34,7 +34,8 @@
     brochureRoot.innerHTML =
       '<p class="desc" style="white-space:pre-wrap; font-size:1.05rem;">' + (brochure.description || '') + '</p>' +
       (brochure.pdfUrl
-        ? '<p><a class="btn primary" href="' + brochure.pdfUrl + '" target="_blank" rel="noopener">⬇ Download Brochure (PDF)</a></p>'
+        ? '<div class="brochure-viewer"><iframe src="' + brochure.pdfUrl + '" title="Course Brochure PDF" loading="lazy"></iframe></div>' +
+          '<p><a class="btn primary" href="' + brochure.pdfUrl + '" target="_blank" rel="noopener" download>⬇ Download Brochure (PDF)</a></p>'
         : '<p class="muted">No brochure has been uploaded yet.</p>');
   }
 

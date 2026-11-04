@@ -274,6 +274,22 @@ h1 {
   aspect-ratio: 16/9;
 }
 
+/* Inline PDF viewer on the Course Brochure page — tall enough to read a
+   full page of the brochure without scrolling the iframe itself, width
+   capped to match the rest of the page's content. */
+.brochure-viewer {
+  margin-bottom: 14px;
+}
+
+.brochure-viewer iframe {
+  width: 100%;
+  height: 80vh;
+  min-height: 480px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
 .slot-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -444,6 +460,16 @@ h1 {
 
 .modal-backdrop[hidden] {
   display: none;
+}
+
+/* index.html opens #editModal on top of the still-open #userModal (both
+   .modal-backdrop share z-index:100, so without this the later one in DOM
+   order — userModal — would paint over editModal regardless of which one
+   was opened more recently, making parts of the Edit tour content modal
+   unclickable). Harmless on tours-info.html/course-info.html/course-
+   brochure.html, where #editModal is the only modal on the page. */
+#editModal {
+  z-index: 101;
 }
 
 .modal {
