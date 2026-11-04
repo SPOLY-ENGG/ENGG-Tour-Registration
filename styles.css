@@ -185,8 +185,12 @@ h1 {
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.82rem;
-  color: var(--muted);
   margin: 0 0 10px;
+}
+
+.highlight-location a {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .highlight-heading {

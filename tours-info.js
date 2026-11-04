@@ -12,6 +12,7 @@
   var fHero = document.getElementById('f-hero');
   var fDetail = document.getElementById('f-detail');
   var fLocation = document.getElementById('f-location');
+  var fMapQuery = document.getElementById('f-map-query');
   var fActivitiesEl = document.getElementById('f-activities');
   var addActivityBtn = document.getElementById('addActivityBtn');
 
@@ -85,8 +86,14 @@
   // of each activity are available; swap the `img` URL for a real one
   // per activity whenever you have it, via the Edit modal.
   var DEFAULT_HIGHLIGHTS = {
+    eee: {
+      location: 'T12101A-D',
+      mapQuery: 'SP T12',
+      activities: [],
+    },
     mae: {
-      location: 'Automation & Mechatronics Centre (AMC)',
+      location: 'AMC W1314',
+      mapQuery: 'W13',
       activities: [
         { icon: 'robotDog', img: 'https://picsum.photos/seed/mae-robot-dog/240/240', title: 'Hands-on Activity: Robot Dog', desc: 'Take the controls of a quadruped robot dog and see legged robotics in action.' },
         { icon: 'robotArm', img: 'https://picsum.photos/seed/mae-robot-arm/240/240', title: 'Hands-on Activity: Robot Arm', desc: 'Get behind the controls of an industrial robot arm and try a pick-and-place task yourself.' },
@@ -96,7 +103,8 @@
       ],
     },
     aero: {
-      location: 'Aerohub',
+      location: 'T18A212',
+      mapQuery: 'SP Aerohub',
       activities: [
         { icon: 'jet', img: 'https://picsum.photos/seed/aero-aircraft-showcase/240/240', title: 'Aircraft & Flight Simulation Showcase', desc: 'See RSAF and commercial aircraft and helicopters up close, plus a live flight simulation showcase.' },
         { icon: 'vr', img: 'https://picsum.photos/seed/aero-vr-showcase/240/240', title: 'VR Project Showcase', desc: 'Experience student-built virtual reality projects exploring aerospace engineering concepts.' },
@@ -110,15 +118,30 @@
     return tour.location || (DEFAULT_HIGHLIGHTS[tour.id] && DEFAULT_HIGHLIGHTS[tour.id].location) || '';
   }
 
+  // The Google Maps search term can differ from the displayed location text
+  // (e.g. location shows a room number like "T18A212", but the map should
+  // search for the building's common name, "SP Aerohub") — falls back to
+  // the location text itself if no separate map query is set.
+  function tourMapQuery(tour) {
+    return tour.mapQuery || (DEFAULT_HIGHLIGHTS[tour.id] && DEFAULT_HIGHLIGHTS[tour.id].mapQuery) || tourLocation(tour);
+  }
+
   function tourActivities(tour) {
     if (tour.activities && tour.activities.length) return tour.activities;
     return (DEFAULT_HIGHLIGHTS[tour.id] && DEFAULT_HIGHLIGHTS[tour.id].activities) || [];
   }
 
+  function mapUrl(query) {
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+  }
+
   function highlightsHtml(tour) {
     var location = tourLocation(tour);
     var activities = tourActivities(tour);
-    if (!activities.length) return '';
+    var locationHtml = location
+      ? '<p class="highlight-location"><a href="' + mapUrl(tourMapQuery(tour)) + '" target="_blank" rel="noopener">📍 ' + location + ' — view on Google Maps</a></p>'
+      : '';
+    if (!activities.length) return locationHtml;
     var cards = activities.map(function (a) {
       return '<div class="highlight-card">' +
         '<span class="highlight-media">' +
@@ -131,7 +154,7 @@
         '</span>' +
         '</div>';
     }).join('');
-    return (location ? '<p class="highlight-location">📍 ' + location + '</p>' : '') +
+    return locationHtml +
       '<h3 class="highlight-heading">What to expect</h3>' +
       '<div class="highlight-grid">' + cards + '</div>';
   }
@@ -229,6 +252,7 @@
     fHero.value = tour.heroImageUrl || '';
     fDetail.value = tour.detailDescription || '';
     fLocation.value = tourLocation(tour);
+    fMapQuery.value = tour.mapQuery || (DEFAULT_HIGHLIGHTS[tourId] && DEFAULT_HIGHLIGHTS[tourId].mapQuery) || '';
     editingActivities = tourActivities(tour).map(function (a) {
       return { icon: a.icon || 'star', img: a.img || '', title: a.title || '', desc: a.desc || '' };
     });
@@ -252,6 +276,7 @@
       heroImageUrl: fHero.value,
       detailDescription: fDetail.value,
       location: fLocation.value,
+      mapQuery: fMapQuery.value,
       activities: editingActivities,
     }).then(function (res) {
       editSave.disabled = false;
