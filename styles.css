@@ -326,6 +326,11 @@ h1 {
   margin-bottom: 6px;
 }
 
+.slot .vacancy-text.full-warning {
+  color: var(--warn);
+  font-weight: 700;
+}
+
 .bar {
   height: 6px;
   border-radius: 4px;

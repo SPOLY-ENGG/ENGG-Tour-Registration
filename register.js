@@ -88,7 +88,7 @@
       var pct = Math.max(0, Math.min(100, (booked / tour.capacity) * 100));
       btn.innerHTML =
         '<span class="time">' + formatSlot(slot) + '</span>' +
-        '<span class="vacancy-text">' + (vacancy > 0 ? vacancy + ' vacancy left' : 'FULL') + '</span>' +
+        (vacancy <= 0 ? '<span class="vacancy-text full-warning">⚠ FULL</span>' : '') +
         '<span class="bar"><span class="bar-fill ' + vacancyClass(vacancy, tour.capacity) + '" style="width:' + pct + '%"></span></span>';
       btn.addEventListener('click', function () { toggleSlot(slot); });
       slotGrid.appendChild(btn);
