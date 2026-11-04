@@ -29,11 +29,10 @@
       .then(function (r) { return r.json(); });
   }
 
-  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
-  apiPost({ action: 'trackVisit', page: 'tours-info' }).catch(function () {});
-
   function loadStatus() {
-    return apiGet({ action: 'status' }).then(function (data) {
+    // `page` piggybacks this page's traffic ping on the status request
+    // itself, instead of a separate POST — see Code.gs's doGet() comment.
+    return apiGet({ action: 'status', page: 'tours-info' }).then(function (data) {
       statusData = data;
       statusLine.textContent = '';
       render();

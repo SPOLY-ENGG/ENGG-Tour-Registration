@@ -28,9 +28,6 @@
       .then(function (r) { return r.json(); });
   }
 
-  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
-  apiPost({ action: 'trackVisit', page: 'course-info' }).catch(function () {});
-
   function render(info) {
     currentInfo = info;
     courseTitle.textContent = info.title || 'Course Information';
@@ -40,7 +37,9 @@
       '<p class="desc" style="white-space:pre-wrap; font-size:1.05rem;">' + (info.body || '') + '</p>';
   }
 
-  apiGet({ action: 'status' }).then(function (data) {
+  // `page` piggybacks this page's traffic ping on the status request
+  // itself, instead of a separate POST — see Code.gs's doGet() comment.
+  apiGet({ action: 'status', page: 'course-info' }).then(function (data) {
     statusLine.textContent = '';
     render(data.courseInfo || {});
   }).catch(function () {

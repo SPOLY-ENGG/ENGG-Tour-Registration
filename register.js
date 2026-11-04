@@ -53,9 +53,6 @@
       .then(function (r) { return r.json(); });
   }
 
-  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
-  if (tourId) apiPost({ action: 'trackVisit', page: 'register-' + tourId }).catch(function () {});
-
   function vacancyClass(vacancy, capacity) {
     if (vacancy <= 0) return 'full';
     if (vacancy / capacity <= 0.2) return 'low';
@@ -133,7 +130,11 @@
 
   function loadStatus() {
     statusLine.textContent = 'Loading tour information…';
-    return apiGet({ action: 'status' }).then(function (data) {
+    // `page` piggybacks this page's traffic ping on the status request
+    // itself, instead of a separate POST — see Code.gs's doGet() comment.
+    var params = { action: 'status' };
+    if (tourId) params.page = 'register-' + tourId;
+    return apiGet(params).then(function (data) {
       statusData = data;
       var tour = currentTour();
       if (!tour) {

@@ -27,9 +27,6 @@
       .then(function (r) { return r.json(); });
   }
 
-  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
-  apiPost({ action: 'trackVisit', page: 'course-brochure' }).catch(function () {});
-
   function render(brochure) {
     currentBrochure = brochure;
     brochureTitle.textContent = brochure.title || 'Course Brochure';
@@ -41,7 +38,9 @@
         : '<p class="muted">No brochure has been uploaded yet.</p>');
   }
 
-  apiGet({ action: 'status' }).then(function (data) {
+  // `page` piggybacks this page's traffic ping on the status request
+  // itself, instead of a separate POST — see Code.gs's doGet() comment.
+  apiGet({ action: 'status', page: 'course-brochure' }).then(function (data) {
     statusLine.textContent = '';
     render(data.brochure || {});
   }).catch(function () {

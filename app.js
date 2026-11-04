@@ -23,11 +23,10 @@
 
   function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
 
-  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
-  apiPost({ action: 'trackVisit', page: 'home' }).catch(function () {});
-
   function refreshStatus() {
-    return apiGet({ action: 'status' }).then(function (data) {
+    // `page` piggybacks this page's traffic ping on the status request
+    // itself, instead of a separate POST — see Code.gs's doGet() comment.
+    return apiGet({ action: 'status', page: 'home' }).then(function (data) {
       statusData = data;
       dayBadge.textContent = statusData.activeDay ? 'Day ' + statusData.activeDay : 'Not open today';
     }).catch(function () {
