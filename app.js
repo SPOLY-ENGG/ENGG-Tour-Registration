@@ -23,6 +23,9 @@
 
   function formatSlot(slot) { return slot.slice(0, 2) + ':' + slot.slice(2) + ' hrs'; }
 
+  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
+  apiPost({ action: 'trackVisit', page: 'home' }).catch(function () {});
+
   function refreshStatus() {
     return apiGet({ action: 'status' }).then(function (data) {
       statusData = data;
@@ -228,7 +231,50 @@
       html += buildVisitorLineChart(day);
     });
 
+    html += buildTrafficTable();
+
     userStatusRoot.innerHTML = html;
+  }
+
+  // Friendlier labels for the raw `page` tags sent by trackVisit() — falls
+  // back to the raw tag itself for any page not listed (e.g. a future one).
+  var PAGE_LABELS = {
+    home: 'Home',
+    'tours-info': 'Tour Information',
+    'course-info': 'Course Information',
+    'course-brochure': 'Course Brochure',
+    'register-eee': 'Register — EEE',
+    'register-mae': 'Register — MAE',
+    'register-aero': 'Register — Aero',
+  };
+
+  // Page-visit counts, grouped by day then page, with a per-day total row —
+  // same table shape as the registration-count tables above, for a quick
+  // "how much traffic are we getting" read alongside "how many registered".
+  function buildTrafficTable() {
+    var traffic = statusData.traffic || [];
+    if (!traffic.length) return '';
+    var days = Array.from(new Set(traffic.map(function (t) { return t.date; }))).sort();
+    var pages = Array.from(new Set(traffic.map(function (t) { return t.page; }))).sort();
+    var countByDayPage = {};
+    traffic.forEach(function (t) { countByDayPage[t.date + '|' + t.page] = t.count; });
+
+    var html = '<h3 style="margin-top:28px;">Site Traffic (page visits per day)</h3>';
+    html += '<table class="status-table"><thead><tr><th>Date</th>';
+    pages.forEach(function (p) { html += '<th>' + (PAGE_LABELS[p] || p) + '</th>'; });
+    html += '<th>Total</th></tr></thead><tbody>';
+    days.forEach(function (day) {
+      html += '<tr><td>' + day + '</td>';
+      var dayTotal = 0;
+      pages.forEach(function (p) {
+        var c = countByDayPage[day + '|' + p] || 0;
+        dayTotal += c;
+        html += '<td>' + c + '</td>';
+      });
+      html += '<td style="font-weight:700;">' + dayTotal + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    return html;
   }
 
   // One combined table: each tour's total across all 3 days, each day's

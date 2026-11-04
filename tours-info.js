@@ -29,6 +29,9 @@
       .then(function (r) { return r.json(); });
   }
 
+  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
+  apiPost({ action: 'trackVisit', page: 'tours-info' }).catch(function () {});
+
   function loadStatus() {
     return apiGet({ action: 'status' }).then(function (data) {
       statusData = data;

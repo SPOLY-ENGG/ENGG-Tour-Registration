@@ -53,6 +53,9 @@
       .then(function (r) { return r.json(); });
   }
 
+  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
+  if (tourId) apiPost({ action: 'trackVisit', page: 'register-' + tourId }).catch(function () {});
+
   function vacancyClass(vacancy, capacity) {
     if (vacancy <= 0) return 'full';
     if (vacancy / capacity <= 0.2) return 'low';

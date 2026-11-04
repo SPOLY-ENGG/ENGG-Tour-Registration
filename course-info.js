@@ -28,6 +28,9 @@
       .then(function (r) { return r.json(); });
   }
 
+  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
+  apiPost({ action: 'trackVisit', page: 'course-info' }).catch(function () {});
+
   function render(info) {
     currentInfo = info;
     courseTitle.textContent = info.title || 'Course Information';

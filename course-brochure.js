@@ -27,6 +27,9 @@
       .then(function (r) { return r.json(); });
   }
 
+  // Fire-and-forget traffic ping — never blocks the page, failures ignored.
+  apiPost({ action: 'trackVisit', page: 'course-brochure' }).catch(function () {});
+
   function render(brochure) {
     currentBrochure = brochure;
     brochureTitle.textContent = brochure.title || 'Course Brochure';
