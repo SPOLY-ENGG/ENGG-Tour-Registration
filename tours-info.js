@@ -102,8 +102,10 @@
     var cards = info.activities.map(function (a) {
       return '<div class="highlight-card">' +
         '<span class="highlight-icon">' + (ACTIVITY_ICONS[a.icon] || '') + '</span>' +
+        '<span class="highlight-card-text">' +
         '<h3>' + a.title + '</h3>' +
         '<p>' + a.desc + '</p>' +
+        '</span>' +
         '</div>';
     }).join('');
     return '<p class="highlight-location">📍 ' + info.location + '</p>' +

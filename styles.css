@@ -197,28 +197,35 @@ h1 {
 
 .highlight-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-bottom: 16px;
 }
 
 .highlight-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px;
 }
 
+.highlight-card-text {
+  min-width: 0;
+}
+
 .highlight-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   width: 38px;
   height: 38px;
   border-radius: 50%;
   background: rgba(255, 123, 136, 0.15);
   color: var(--accent);
-  margin-bottom: 10px;
 }
 
 .highlight-icon svg {
