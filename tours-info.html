@@ -29,19 +29,28 @@
 <!-- Edit mode modal (photo/video/full description) — shared across all 3
      tour cards; the Save handler knows which tour via editModal.dataset.tourId -->
 <div class="modal-backdrop" id="editModal" hidden>
-  <div class="modal">
+  <div class="modal wide">
     <h2>Edit this tour's details</h2>
     <div class="edit-field">
       <label>Background photo URL</label>
       <input type="text" id="f-hero" placeholder="https://example.com/photo.jpg">
     </div>
     <div class="edit-field">
-      <label>Video URL (direct .mp4 link, or a YouTube link)</label>
+      <label>Video URL (direct .mp4 link, or a YouTube link) — plays on autoloop, muted</label>
       <input type="text" id="f-video" placeholder="https://example.com/video.mp4">
     </div>
     <div class="edit-field">
       <label>Full description</label>
       <textarea id="f-detail" style="min-height:160px"></textarea>
+    </div>
+    <div class="edit-field">
+      <label>Location (shown as a badge above "What to expect")</label>
+      <input type="text" id="f-location" placeholder="e.g. Automation &amp; Mechatronics Centre (AMC)">
+    </div>
+    <div class="edit-field">
+      <label>"What to expect" activities</label>
+      <div id="f-activities"></div>
+      <button type="button" class="btn ghost" id="addActivityBtn" style="margin-top:8px;">+ Add activity</button>
     </div>
     <div class="modal-actions">
       <button type="button" class="btn ghost" id="editCancel">Cancel</button>

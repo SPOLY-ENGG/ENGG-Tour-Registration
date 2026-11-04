@@ -12,8 +12,12 @@
   var fHero = document.getElementById('f-hero');
   var fVideo = document.getElementById('f-video');
   var fDetail = document.getElementById('f-detail');
+  var fLocation = document.getElementById('f-location');
+  var fActivitiesEl = document.getElementById('f-activities');
+  var addActivityBtn = document.getElementById('addActivityBtn');
 
   var statusData = null;
+  var editingActivities = []; // working copy of the open tour's activities while the modal is up
 
   function apiGet(params) {
     // _ts busts any browser/CDN caching of this GET request.
@@ -26,13 +30,23 @@
       .then(function (r) { return r.json(); });
   }
 
+  function youtubeId(url) {
+    var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{6,})/);
+    return m ? m[1] : null;
+  }
+
+  // Autoplaying video must be muted — that's a universal browser autoplay
+  // policy, not something this site can opt out of; `controls` stays so a
+  // visitor can unmute/pause. YouTube's own loop needs `playlist=<id>` set
+  // to the same id as `loop=1` for the embed to actually repeat.
   function videoHtml(url) {
     if (!url) return '';
-    if (/youtube\.com|youtu\.be/.test(url)) {
-      var embed = url.replace('watch?v=', 'embed/');
+    var ytId = /youtube\.com|youtu\.be/.test(url) ? youtubeId(url) : null;
+    if (ytId) {
+      var embed = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId;
       return '<iframe class="tour-detail-video" style="aspect-ratio:16/9" src="' + embed + '" allowfullscreen loading="lazy"></iframe>';
     }
-    return '<video class="tour-detail-video" src="' + url + '" controls></video>';
+    return '<video class="tour-detail-video" src="' + url + '" autoplay muted loop playsinline controls></video>';
   }
 
   function loadStatus() {
@@ -68,17 +82,27 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="4"></rect><circle cx="8" cy="12.5" r="1.6"></circle><circle cx="16" cy="12.5" r="1.6"></circle><path d="M10.5 12.5h3"></path></svg>',
     drone:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="5" r="2"></circle><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle><path d="M7 6.5L10 10"></path><path d="M17 6.5L14 10"></path><path d="M7 17.5L10 14"></path><path d="M17 17.5L14 14"></path><rect x="9" y="9" width="6" height="6" rx="1.5"></rect></svg>',
+    star:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.5 6 .7-4.4 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.4 9.2l6-.7z"></path></svg>',
   };
 
-  // Static "what to expect" content for the venue-hosted tours — tied to
-  // this one-time event's physical setup (which building, which activities),
-  // not something that needs admin re-editing through the site, so it's kept
-  // here rather than added to the Tours sheet/editTour schema.
+  var ICON_OPTIONS = ['robotDog', 'robotArm', 'lift', 'trophy', 'gift', 'jet', 'vr', 'drone', 'star'];
+  var ICON_LABELS = {
+    robotDog: 'Robot dog', robotArm: 'Robot arm', lift: 'Lift / elevator',
+    trophy: 'Trophy / showcase', gift: 'Gift / souvenir', jet: 'Aircraft',
+    vr: 'VR headset', drone: 'Drone', star: 'Star (generic)',
+  };
+
+  // Default "what to expect" content for the venue-hosted tours, used only
+  // until the backend has its own saved location/activities for that tour
+  // (older Tours-sheet rows predating this feature read back as empty) — see
+  // highlightsHtml()'s fallback below. Once a tour is saved via the Edit
+  // modal, its own location/activities (from the server) take over.
   // Placeholder photos (Picsum, free to hotlink, same convention the tour
   // hero images use elsewhere in this file) — a stand-in until real photos
-  // of each activity are available; swap the `img` URL below for a real one
-  // per activity whenever you have it.
-  var TOUR_HIGHLIGHTS = {
+  // of each activity are available; swap the `img` URL for a real one
+  // per activity whenever you have it, via the Edit modal.
+  var DEFAULT_HIGHLIGHTS = {
     mae: {
       location: 'Automation & Mechatronics Centre (AMC)',
       activities: [
@@ -86,7 +110,7 @@
         { icon: 'robotArm', img: 'https://picsum.photos/seed/mae-robot-arm/240/240', title: 'Hands-on Activity: Robot Arm', desc: 'Get behind the controls of an industrial robot arm and try a pick-and-place task yourself.' },
         { icon: 'lift', img: 'https://picsum.photos/seed/mae-lift-project/240/240', title: 'Project: Lift Concept', desc: 'See a student-built lift system in action, demonstrating mechanical design and control concepts.' },
         { icon: 'trophy', img: 'https://picsum.photos/seed/mae-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects across mechanical, mechatronics, and robotics engineering.' },
-        { icon: 'gift', img: 'https://picsum.photos/seed/mae-door-gift/240/240', title: 'Door Gifts', desc: 'Drop by for a door gift — while stocks last!' },
+        { icon: 'gift', img: 'https://picsum.photos/seed/mae-door-gift/240/240', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
       ],
     },
     aero: {
@@ -95,19 +119,29 @@
         { icon: 'jet', img: 'https://picsum.photos/seed/aero-aircraft-showcase/240/240', title: 'Aircraft & Flight Simulation Showcase', desc: 'See RSAF and commercial aircraft and helicopters up close, plus a live flight simulation showcase.' },
         { icon: 'vr', img: 'https://picsum.photos/seed/aero-vr-showcase/240/240', title: 'VR Project Showcase', desc: 'Experience student-built virtual reality projects exploring aerospace engineering concepts.' },
         { icon: 'drone', img: 'https://picsum.photos/seed/aero-drone-flying/240/240', title: 'Hands-on Activity: Drone Obstacle Flying', desc: 'Take the controls and fly a drone through an obstacle course.' },
-        { icon: 'gift', img: 'https://picsum.photos/seed/aero-door-gift/240/240', title: 'Door Gifts', desc: 'Drop by for a door gift — while stocks last!' },
+        { icon: 'gift', img: 'https://picsum.photos/seed/aero-door-gift/240/240', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
       ],
     },
   };
 
-  function highlightsHtml(tourId) {
-    var info = TOUR_HIGHLIGHTS[tourId];
-    if (!info) return '';
-    var cards = info.activities.map(function (a) {
+  function tourLocation(tour) {
+    return tour.location || (DEFAULT_HIGHLIGHTS[tour.id] && DEFAULT_HIGHLIGHTS[tour.id].location) || '';
+  }
+
+  function tourActivities(tour) {
+    if (tour.activities && tour.activities.length) return tour.activities;
+    return (DEFAULT_HIGHLIGHTS[tour.id] && DEFAULT_HIGHLIGHTS[tour.id].activities) || [];
+  }
+
+  function highlightsHtml(tour) {
+    var location = tourLocation(tour);
+    var activities = tourActivities(tour);
+    if (!activities.length) return '';
+    var cards = activities.map(function (a) {
       return '<div class="highlight-card">' +
         '<span class="highlight-media">' +
         '<img src="' + a.img + '" alt="" loading="lazy">' +
-        '<span class="highlight-icon">' + (ACTIVITY_ICONS[a.icon] || '') + '</span>' +
+        '<span class="highlight-icon">' + (ACTIVITY_ICONS[a.icon] || ACTIVITY_ICONS.star) + '</span>' +
         '</span>' +
         '<span class="highlight-card-text">' +
         '<h3>' + a.title + '</h3>' +
@@ -115,7 +149,7 @@
         '</span>' +
         '</div>';
     }).join('');
-    return '<p class="highlight-location">📍 ' + info.location + '</p>' +
+    return (location ? '<p class="highlight-location">📍 ' + location + '</p>' : '') +
       '<h3 class="highlight-heading">What to expect</h3>' +
       '<div class="highlight-grid">' + cards + '</div>';
   }
@@ -157,7 +191,7 @@
         (tour.heroImageUrl ? '<img class="tour-detail-hero" src="' + tour.heroImageUrl + '" alt="">' : '') +
         videoHtml(tour.videoUrl) +
         '<p class="desc">' + (tour.detailDescription || tour.shortDescription || '') + '</p>' +
-        highlightsHtml(tour.id) +
+        highlightsHtml(tour) +
         '<p><a class="more-link" href="' + registerUrl + '">Register for this tour →</a></p>';
       toursRoot.appendChild(card);
     });
@@ -171,6 +205,41 @@
     return statusData.tours.find(function (t) { return t.id === tourId; });
   }
 
+  function renderActivityRows() {
+    fActivitiesEl.innerHTML = '';
+    editingActivities.forEach(function (a, i) {
+      var row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML =
+        '<div class="activity-row-top">' +
+        '<select class="act-icon">' + ICON_OPTIONS.map(function (k) {
+          return '<option value="' + k + '"' + (k === a.icon ? ' selected' : '') + '>' + ICON_LABELS[k] + '</option>';
+        }).join('') + '</select>' +
+        '<button type="button" class="btn ghost act-remove">✕ Remove</button>' +
+        '</div>' +
+        '<input type="text" class="act-img" placeholder="Picture URL">' +
+        '<input type="text" class="act-title" placeholder="Title">' +
+        '<textarea class="act-desc" placeholder="Description"></textarea>';
+      row.querySelector('.act-img').value = a.img || '';
+      row.querySelector('.act-title').value = a.title || '';
+      row.querySelector('.act-desc').value = a.desc || '';
+      row.querySelector('.act-icon').addEventListener('change', function () { editingActivities[i].icon = this.value; });
+      row.querySelector('.act-img').addEventListener('input', function () { editingActivities[i].img = this.value; });
+      row.querySelector('.act-title').addEventListener('input', function () { editingActivities[i].title = this.value; });
+      row.querySelector('.act-desc').addEventListener('input', function () { editingActivities[i].desc = this.value; });
+      row.querySelector('.act-remove').addEventListener('click', function () {
+        editingActivities.splice(i, 1);
+        renderActivityRows();
+      });
+      fActivitiesEl.appendChild(row);
+    });
+  }
+
+  addActivityBtn.addEventListener('click', function () {
+    editingActivities.push({ icon: 'star', img: '', title: '', desc: '' });
+    renderActivityRows();
+  });
+
   function openEditModal(tourId) {
     var pw = window.prompt('Enter the edit password:');
     if (pw === null) return;
@@ -179,6 +248,11 @@
     fHero.value = tour.heroImageUrl || '';
     fVideo.value = tour.videoUrl || '';
     fDetail.value = tour.detailDescription || '';
+    fLocation.value = tourLocation(tour);
+    editingActivities = tourActivities(tour).map(function (a) {
+      return { icon: a.icon || 'star', img: a.img || '', title: a.title || '', desc: a.desc || '' };
+    });
+    renderActivityRows();
     editModal.hidden = false;
     editModal.dataset.password = pw;
     editModal.dataset.tourId = tourId;
@@ -198,6 +272,8 @@
       heroImageUrl: fHero.value,
       videoUrl: fVideo.value,
       detailDescription: fDetail.value,
+      location: fLocation.value,
+      activities: editingActivities,
     }).then(function (res) {
       editSave.disabled = false;
       editSave.textContent = 'Save changes';
