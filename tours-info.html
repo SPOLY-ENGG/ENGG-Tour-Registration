@@ -13,7 +13,7 @@
   <header class="top">
     <div>
       <h1>Tour Information</h1>
-      <p class="sub">What each tour covers, with photos and video.</p>
+      <p class="sub">What each tour covers, with photos.</p>
     </div>
   </header>
 
@@ -26,7 +26,7 @@
   <footer class="site-footer">Built with vanilla HTML, CSS &amp; JavaScript — no frameworks, no build step.</footer>
 </div>
 
-<!-- Edit mode modal (photo/video/full description) — shared across all 3
+<!-- Edit mode modal (photo/full description) — shared across all 3
      tour cards; the Save handler knows which tour via editModal.dataset.tourId -->
 <div class="modal-backdrop" id="editModal" hidden>
   <div class="modal wide">
@@ -34,10 +34,6 @@
     <div class="edit-field">
       <label>Background photo URL</label>
       <input type="text" id="f-hero" placeholder="https://example.com/photo.jpg">
-    </div>
-    <div class="edit-field">
-      <label>Video URL (direct .mp4 link, or a YouTube link) — plays on autoloop, muted</label>
-      <input type="text" id="f-video" placeholder="https://example.com/video.mp4">
     </div>
     <div class="edit-field">
       <label>Full description</label>

@@ -10,7 +10,6 @@
   var editSave = document.getElementById('editSave');
   var editMsg = document.getElementById('editMsg');
   var fHero = document.getElementById('f-hero');
-  var fVideo = document.getElementById('f-video');
   var fDetail = document.getElementById('f-detail');
   var fLocation = document.getElementById('f-location');
   var fActivitiesEl = document.getElementById('f-activities');
@@ -28,25 +27,6 @@
   function apiPost(body) {
     return fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json(); });
-  }
-
-  function youtubeId(url) {
-    var m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{6,})/);
-    return m ? m[1] : null;
-  }
-
-  // Autoplaying video must be muted — that's a universal browser autoplay
-  // policy, not something this site can opt out of; `controls` stays so a
-  // visitor can unmute/pause. YouTube's own loop needs `playlist=<id>` set
-  // to the same id as `loop=1` for the embed to actually repeat.
-  function videoHtml(url) {
-    if (!url) return '';
-    var ytId = /youtube\.com|youtu\.be/.test(url) ? youtubeId(url) : null;
-    if (ytId) {
-      var embed = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId;
-      return '<iframe class="tour-detail-video" style="aspect-ratio:16/9" src="' + embed + '" allowfullscreen loading="lazy"></iframe>';
-    }
-    return '<video class="tour-detail-video" src="' + url + '" autoplay muted loop playsinline controls></video>';
   }
 
   function loadStatus() {
@@ -189,7 +169,6 @@
         '<div class="top"><h2>' + tour.name + '</h2>' +
         '<button type="button" class="btn ghost edit-tour-btn" data-tour-id="' + tour.id + '">✎ Edit</button></div>' +
         (tour.heroImageUrl ? '<img class="tour-detail-hero" src="' + tour.heroImageUrl + '" alt="">' : '') +
-        videoHtml(tour.videoUrl) +
         '<p class="desc">' + (tour.detailDescription || tour.shortDescription || '') + '</p>' +
         highlightsHtml(tour) +
         '<p><a class="more-link" href="' + registerUrl + '">Register for this tour →</a></p>';
@@ -246,7 +225,6 @@
     var tour = currentTour(tourId);
     editMsg.textContent = '';
     fHero.value = tour.heroImageUrl || '';
-    fVideo.value = tour.videoUrl || '';
     fDetail.value = tour.detailDescription || '';
     fLocation.value = tourLocation(tour);
     editingActivities = tourActivities(tour).map(function (a) {
@@ -270,7 +248,6 @@
       password: pw,
       tourId: tourId,
       heroImageUrl: fHero.value,
-      videoUrl: fVideo.value,
       detailDescription: fDetail.value,
       location: fLocation.value,
       activities: editingActivities,

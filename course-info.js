@@ -13,7 +13,6 @@
   var editMsg = document.getElementById('editMsg');
   var fTitle = document.getElementById('f-title');
   var fHero = document.getElementById('f-hero');
-  var fVideo = document.getElementById('f-video');
   var fBody = document.getElementById('f-body');
 
   var currentInfo = null;
@@ -29,22 +28,12 @@
       .then(function (r) { return r.json(); });
   }
 
-  function videoHtml(url) {
-    if (!url) return '';
-    if (/youtube\.com|youtu\.be/.test(url)) {
-      var embed = url.replace('watch?v=', 'embed/');
-      return '<iframe class="tour-detail-video" style="aspect-ratio:16/9" src="' + embed + '" allowfullscreen loading="lazy"></iframe>';
-    }
-    return '<video class="tour-detail-video" src="' + url + '" controls></video>';
-  }
-
   function render(info) {
     currentInfo = info;
     courseTitle.textContent = info.title || 'Course Information';
     document.title = (info.title || 'Course Information') + ' — Engineering Open House';
     courseRoot.innerHTML =
       (info.heroImageUrl ? '<img class="tour-detail-hero" src="' + info.heroImageUrl + '" alt="">' : '') +
-      videoHtml(info.videoUrl) +
       '<p class="desc" style="white-space:pre-wrap; font-size:1.05rem;">' + (info.body || '') + '</p>';
   }
 
@@ -98,7 +87,6 @@
     editMsg.textContent = '';
     fTitle.value = (currentInfo && currentInfo.title) || '';
     fHero.value = (currentInfo && currentInfo.heroImageUrl) || '';
-    fVideo.value = (currentInfo && currentInfo.videoUrl) || '';
     fBody.value = (currentInfo && currentInfo.body) || '';
     editModal.hidden = false;
     editModal.dataset.password = pw;
@@ -115,7 +103,6 @@
       password: pw,
       title: fTitle.value,
       heroImageUrl: fHero.value,
-      videoUrl: fVideo.value,
       body: fBody.value,
     }).then(function (res) {
       editSave.disabled = false;
@@ -127,7 +114,7 @@
       }
       editMsg.textContent = 'Saved.';
       editMsg.className = 'form-msg ok';
-      render({ title: fTitle.value, heroImageUrl: fHero.value, videoUrl: fVideo.value, body: fBody.value });
+      render({ title: fTitle.value, heroImageUrl: fHero.value, body: fBody.value });
       editModal.hidden = true;
     }).catch(function () {
       editSave.disabled = false;
