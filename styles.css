@@ -779,62 +779,23 @@ h1 {
   font-size: 0.86rem;
 }
 
-/* Groups the 3 "Register for ___ Discovery" tiles visually under Discovery
-   Information as its subsection, by request — one outer tinted panel
-   holding the big Discovery Information tile plus an indented, connected
-   list of the 3 smaller register tiles underneath it. */
-.home-group {
-  border-radius: var(--radius);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12), 0 6px 14px rgba(0, 0, 0, 0.3);
-  padding: 16px 20px;
+/* Small label cueing that the 3 "Register for ___ Discovery" tiles below
+   belong to Discovery Information above — by request, replacing an earlier
+   version that wrapped all 4 tiles in one shared box (the user didn't want
+   that). No indentation or box, just a text cue between the two groups. */
+.home-group-caption {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 2px 0 -2px;
 }
 
-.home-group.tint-1 { background: #ffe3e6; }
-
-.home-group .home-card.big {
-  padding: 0;
-  background: none;
-  border: none;
-  box-shadow: none;
-  border-radius: 0;
-}
-
-.home-group .home-card.big:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-.home-subgroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 12px 0 0 21px;
-  padding-left: 15px;
-  border-left: 2px solid rgba(0, 0, 0, 0.15);
-}
-
-.home-card.sub {
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: none;
-  padding: 8px 12px;
-}
-
-.home-card.sub:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: none;
-  box-shadow: none;
-}
-
-.home-card.sub .home-card-icon {
-  width: 26px;
-  height: 26px;
-}
-
-.home-card.sub .home-card-icon svg {
-  width: 14px;
-  height: 14px;
+/* Extra breathing room before Course Information and before Course
+   Brochure — on top of .home-grid's own 8px gap — so each reads as the
+   start of its own section rather than just another tile in the same
+   run as the register tiles above it, by request. */
+.home-grid > .section-gap {
+  margin-top: 24px;
 }
 
 @media (max-width: 600px) {
