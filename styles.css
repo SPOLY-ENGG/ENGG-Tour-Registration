@@ -546,10 +546,26 @@ h1 {
 
 .activity-row-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
+}
+
+.act-reorder {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.act-reorder .btn {
+  padding: 4px 9px;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.act-reorder .btn:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 
 .activity-row select {

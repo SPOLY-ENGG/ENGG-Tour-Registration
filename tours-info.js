@@ -67,13 +67,15 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="5" r="2"></circle><circle cx="19" cy="5" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle><path d="M7 6.5L10 10"></path><path d="M17 6.5L14 10"></path><path d="M7 17.5L10 14"></path><path d="M17 17.5L14 14"></path><rect x="9" y="9" width="6" height="6" rx="1.5"></rect></svg>',
     star:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.5 6 .7-4.4 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.4 9.2l6-.7z"></path></svg>',
+    diploma:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5z"></path><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path><path d="M22 9v6"></path></svg>',
   };
 
-  var ICON_OPTIONS = ['robotDog', 'robotArm', 'lift', 'trophy', 'gift', 'jet', 'vr', 'drone', 'star'];
+  var ICON_OPTIONS = ['robotDog', 'robotArm', 'lift', 'trophy', 'gift', 'jet', 'vr', 'drone', 'star', 'diploma'];
   var ICON_LABELS = {
     robotDog: 'Robot dog', robotArm: 'Robot arm', lift: 'Lift / elevator',
     trophy: 'Trophy / showcase', gift: 'Gift / souvenir', jet: 'Aircraft',
-    vr: 'VR headset', drone: 'Drone', star: 'Star (generic)',
+    vr: 'VR headset', drone: 'Drone', star: 'Star (generic)', diploma: 'Diploma / course',
   };
 
   // Default "what to expect" content for the venue-hosted tours, used only
@@ -90,9 +92,12 @@
       location: 'T12101A-D',
       mapQuery: 'SP T12',
       activities: [
-        { icon: 'star', img: 'https://picsum.photos/seed/eee-hands-on/240/240', title: 'Hands-on Activity: Circuit Building', desc: 'Build and test a simple circuit yourself under the guidance of our students and instructors.' },
-        { icon: 'trophy', img: 'https://picsum.photos/seed/eee-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects in electrical and electronic engineering, including IoT and embedded systems.' },
-        { icon: 'gift', img: '', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+        { icon: 'diploma', img: '', title: 'Diploma in Aerospace Electronics (DASE) Discovery', desc: 'Learn about the Diploma in Aerospace Electronics (DASE) — covering avionics, aircraft electrical systems, and aerospace electronic instrumentation.' },
+        { icon: 'diploma', img: '', title: 'Diploma in Computer Engineering (DCPE) Discovery', desc: 'Learn about the Diploma in Computer Engineering (DCPE) — covering embedded systems, software development, and computer hardware design.' },
+        { icon: 'diploma', img: '', title: 'Diploma in Engineering with Business (DEB) Discovery', desc: 'Learn about the Diploma in Engineering with Business (DEB) — combining core engineering fundamentals with business and management skills.' },
+        { icon: 'diploma', img: '', title: 'Diploma in Electrical and Electronic Engineering (DEEE) Discovery', desc: 'Learn about the Diploma in Electrical and Electronic Engineering (DEEE) — covering circuit design, power systems, and electronic systems.' },
+        { icon: 'drone', img: '', title: 'Hands-on Activity: Drone Soccer', desc: 'Join a drone soccer match and see competitive drone flying in action.' },
+        { icon: 'vr', img: '', title: 'Hands-on Activity: VR Flight Simulator', desc: 'Step into a VR flight simulator and experience what it\'s like to pilot an aircraft.' },
       ],
     },
     mae: {
@@ -104,6 +109,8 @@
         { icon: 'lift', img: 'https://picsum.photos/seed/mae-lift-project/240/240', title: 'Project: Lift Concept', desc: 'See a student-built lift system in action, demonstrating mechanical design and control concepts.' },
         { icon: 'trophy', img: 'https://picsum.photos/seed/mae-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects across mechanical, mechatronics, and robotics engineering.' },
         { icon: 'gift', img: '', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+        { icon: 'diploma', img: '', title: 'Diploma in Mechanical Engineering (DME) Discovery', desc: 'Learn about the Diploma in Mechanical Engineering (DME) — covering mechanical design, manufacturing, and engineering systems.' },
+        { icon: 'diploma', img: '', title: 'Diploma in Mechatronics & Robotics (DMRO) Discovery', desc: 'Learn about the Diploma in Mechatronics & Robotics (DMRO) — combining mechanical, electrical, and software engineering for robotics and automation.' },
       ],
     },
     aero: {
@@ -114,6 +121,8 @@
         { icon: 'vr', img: 'https://picsum.photos/seed/aero-vr-showcase/240/240', title: 'VR Project Showcase', desc: 'Experience student-built virtual reality projects exploring aerospace engineering concepts.' },
         { icon: 'drone', img: 'https://picsum.photos/seed/aero-drone-flying/240/240', title: 'Hands-on Activity: Drone Obstacle Flying', desc: 'Take the controls and fly a drone through an obstacle course.' },
         { icon: 'gift', img: '', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+        { icon: 'diploma', img: '', title: 'Diploma in Aerospace Electronics (DASE) Discovery', desc: 'Learn about the Diploma in Aerospace Electronics (DASE) — covering avionics, aircraft electrical systems, and aerospace electronic instrumentation.' },
+        { icon: 'diploma', img: '', title: 'Diploma in Aeronautical Engineering (DARE) Discovery', desc: 'Learn about the Diploma in Aeronautical Engineering (DARE) — covering aircraft maintenance, aerodynamics, and aviation systems.' },
       ],
     },
   };
@@ -229,6 +238,10 @@
       row.className = 'activity-row';
       row.innerHTML =
         '<div class="activity-row-top">' +
+        '<span class="act-reorder">' +
+        '<button type="button" class="btn ghost act-up" title="Move up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+        '<button type="button" class="btn ghost act-down" title="Move down"' + (i === editingActivities.length - 1 ? ' disabled' : '') + '>↓</button>' +
+        '</span>' +
         '<select class="act-icon">' + ICON_OPTIONS.map(function (k) {
           return '<option value="' + k + '"' + (k === a.icon ? ' selected' : '') + '>' + ICON_LABELS[k] + '</option>';
         }).join('') + '</select>' +
@@ -246,6 +259,20 @@
       row.querySelector('.act-desc').addEventListener('input', function () { editingActivities[i].desc = this.value; });
       row.querySelector('.act-remove').addEventListener('click', function () {
         editingActivities.splice(i, 1);
+        renderActivityRows();
+      });
+      row.querySelector('.act-up').addEventListener('click', function () {
+        if (i === 0) return;
+        var tmp = editingActivities[i - 1];
+        editingActivities[i - 1] = editingActivities[i];
+        editingActivities[i] = tmp;
+        renderActivityRows();
+      });
+      row.querySelector('.act-down').addEventListener('click', function () {
+        if (i === editingActivities.length - 1) return;
+        var tmp = editingActivities[i + 1];
+        editingActivities[i + 1] = editingActivities[i];
+        editingActivities[i] = tmp;
         renderActivityRows();
       });
       fActivitiesEl.appendChild(row);
