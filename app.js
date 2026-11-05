@@ -146,6 +146,62 @@
     });
   });
 
+  // Confirmation email template — editable the same way as tour content,
+  // course info, and the brochure, stored in its own EmailTemplate sheet.
+  var emailModal = document.getElementById('emailModal');
+  var emailCancel = document.getElementById('emailCancel');
+  var emailSave = document.getElementById('emailSave');
+  var emailMsg = document.getElementById('emailMsg');
+  var fEmailEnabled = document.getElementById('f-email-enabled');
+  var fEmailFrom = document.getElementById('f-email-from');
+  var fEmailSubject = document.getElementById('f-email-subject');
+  var fEmailBody = document.getElementById('f-email-body');
+
+  document.getElementById('openEmailBtn').addEventListener('click', function () {
+    var pw = window.prompt('Enter the edit password:');
+    if (pw === null) return;
+    var tpl = statusData.emailTemplate || {};
+    emailMsg.textContent = '';
+    fEmailEnabled.checked = String(tpl.enabled) === 'true';
+    fEmailFrom.value = tpl.fromAlias || '';
+    fEmailSubject.value = tpl.subject || '';
+    fEmailBody.value = tpl.body || '';
+    emailModal.hidden = false;
+    emailModal.dataset.password = pw;
+  });
+
+  emailCancel.addEventListener('click', function () { emailModal.hidden = true; });
+
+  emailSave.addEventListener('click', function () {
+    var pw = emailModal.dataset.password;
+    emailSave.disabled = true;
+    emailSave.textContent = 'Saving…';
+    apiPost({
+      action: 'editEmailTemplate',
+      password: pw,
+      enabled: fEmailEnabled.checked ? 'true' : 'false',
+      fromAlias: fEmailFrom.value,
+      subject: fEmailSubject.value,
+      body: fEmailBody.value,
+    }).then(function (res) {
+      emailSave.disabled = false;
+      emailSave.textContent = 'Save changes';
+      if (!res.ok) {
+        emailMsg.textContent = res.error || 'Save failed.';
+        emailMsg.className = 'form-msg error';
+        return;
+      }
+      emailMsg.textContent = 'Saved.';
+      emailMsg.className = 'form-msg ok';
+      refreshStatus().then(function () { emailModal.hidden = true; });
+    }).catch(function () {
+      emailSave.disabled = false;
+      emailSave.textContent = 'Save changes';
+      emailMsg.textContent = 'Network error — please try again.';
+      emailMsg.className = 'form-msg error';
+    });
+  });
+
   // Edit/Download/Reset all require the separate, stricter edit password,
   // even though the viewer already unlocked the User panel with the user
   // password — a second confirmation layer for these destructive/admin
@@ -273,6 +329,9 @@
   var PAGE_LABELS = {
     home: 'Home',
     'tours-info': 'Discovery Information',
+    'tour-detail-eee': 'Discovery Info — EEE',
+    'tour-detail-mae': 'Discovery Info — MAE',
+    'tour-detail-aero': 'Discovery Info — Aero',
     'course-info': 'Course Information',
     'course-brochure': 'Course Brochure',
     'register-eee': 'Register — EEE',

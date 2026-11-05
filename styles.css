@@ -486,13 +486,13 @@ h1 {
   display: none;
 }
 
-/* index.html opens #editModal on top of the still-open #userModal (both
-   .modal-backdrop share z-index:100, so without this the later one in DOM
-   order — userModal — would paint over editModal regardless of which one
-   was opened more recently, making parts of the Edit tour content modal
-   unclickable). Harmless on tours-info.html/course-info.html/course-
-   brochure.html, where #editModal is the only modal on the page. */
-#editModal {
+/* index.html opens #editModal/#emailModal on top of the still-open
+   #userModal (both .modal-backdrop share z-index:100, so without this the
+   later one in DOM order — userModal — would paint over them regardless of
+   which was opened more recently, making parts of the modal unclickable).
+   Harmless on tours-info.html/course-info.html/course-brochure.html, where
+   #editModal is the only modal on the page. */
+#editModal, #emailModal {
   z-index: 101;
 }
 

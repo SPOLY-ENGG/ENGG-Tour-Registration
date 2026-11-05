@@ -117,6 +117,7 @@
     </div>
     <div class="user-admin-actions">
       <button type="button" class="btn ghost" id="openEditBtn">✎ Edit tour content</button>
+      <button type="button" class="btn ghost" id="openEmailBtn">✉ Edit confirmation email</button>
       <button type="button" class="btn ghost" id="downloadBtn">⬇ Download registrations</button>
       <button type="button" class="btn warn" id="resetBtn">⚠ Reset all data</button>
     </div>
@@ -125,6 +126,34 @@
     <div class="modal-actions">
       <button type="button" class="btn ghost" id="userClose">Close</button>
     </div>
+  </div>
+</div>
+
+<!-- Confirmation email template modal -->
+<div class="modal-backdrop" id="emailModal" hidden>
+  <div class="modal">
+    <h2>Edit confirmation email</h2>
+    <p class="muted">Sent automatically after each successful registration. A personal Gmail account can only send ~100 emails per day in total, regardless of this content — at higher registration volumes, later emails on a busy day may silently fail to send (the registration itself is never affected).</p>
+    <div class="edit-field">
+      <label><input type="checkbox" id="f-email-enabled"> Send a confirmation email</label>
+    </div>
+    <div class="edit-field">
+      <label>Send from (optional — a Gmail "Send As" alias you've verified for this account, e.g. engg@sp.edu.sg; leave blank to send from this Google account's own address)</label>
+      <input type="text" id="f-email-from" placeholder="engg@sp.edu.sg">
+    </div>
+    <div class="edit-field">
+      <label>Subject</label>
+      <input type="text" id="f-email-subject">
+    </div>
+    <div class="edit-field">
+      <label>Body — use {{bookings}}, {{meetingPoint}}, {{gatherMinutesBefore}}, {{email}} as placeholders</label>
+      <textarea id="f-email-body" style="min-height:180px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="emailCancel">Cancel</button>
+      <button type="button" class="btn primary" id="emailSave">Save changes</button>
+    </div>
+    <p class="form-msg" id="emailMsg"></p>
   </div>
 </div>
 
