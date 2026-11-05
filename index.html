@@ -149,6 +149,20 @@
       <label>Body — use {{bookings}}, {{meetingPoint}}, {{gatherMinutesBefore}}, {{email}} as placeholders</label>
       <textarea id="f-email-body" style="min-height:180px"></textarea>
     </div>
+    <h3>Warning messages</h3>
+    <p class="muted">Shown to visitors instead of the email above, when a registration attempt can't go through.</p>
+    <div class="edit-field">
+      <label>Time slot full</label>
+      <textarea id="f-email-slot-full"></textarea>
+    </div>
+    <div class="edit-field">
+      <label>Already registered for this time slot</label>
+      <textarea id="f-email-duplicate"></textarea>
+    </div>
+    <div class="edit-field">
+      <label>Too many participants — use {{maxParticipants}} as a placeholder</label>
+      <textarea id="f-email-max-participants"></textarea>
+    </div>
     <div class="modal-actions">
       <button type="button" class="btn ghost" id="emailCancel">Cancel</button>
       <button type="button" class="btn primary" id="emailSave">Save changes</button>

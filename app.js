@@ -156,6 +156,9 @@
   var fEmailFrom = document.getElementById('f-email-from');
   var fEmailSubject = document.getElementById('f-email-subject');
   var fEmailBody = document.getElementById('f-email-body');
+  var fEmailSlotFull = document.getElementById('f-email-slot-full');
+  var fEmailDuplicate = document.getElementById('f-email-duplicate');
+  var fEmailMaxParticipants = document.getElementById('f-email-max-participants');
 
   document.getElementById('openEmailBtn').addEventListener('click', function () {
     var pw = window.prompt('Enter the edit password:');
@@ -166,6 +169,9 @@
     fEmailFrom.value = tpl.fromAlias || '';
     fEmailSubject.value = tpl.subject || '';
     fEmailBody.value = tpl.body || '';
+    fEmailSlotFull.value = tpl.slotFullMessage || '';
+    fEmailDuplicate.value = tpl.duplicateMessage || '';
+    fEmailMaxParticipants.value = tpl.maxParticipantsMessage || '';
     emailModal.hidden = false;
     emailModal.dataset.password = pw;
   });
@@ -183,6 +189,9 @@
       fromAlias: fEmailFrom.value,
       subject: fEmailSubject.value,
       body: fEmailBody.value,
+      slotFullMessage: fEmailSlotFull.value,
+      duplicateMessage: fEmailDuplicate.value,
+      maxParticipantsMessage: fEmailMaxParticipants.value,
     }).then(function (res) {
       emailSave.disabled = false;
       emailSave.textContent = 'Save changes';
