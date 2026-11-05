@@ -257,15 +257,17 @@ h1 {
 /* The activity title now overlays the bottom of its picture instead of
    sitting in a separate text block below it — no description is shown
    alongside it either, by request ("the heading on top of the picture
-   while no explanation is needed"). */
+   while no explanation is needed"). Caption style is a solid dark bar
+   (not a gradient) for consistent legibility regardless of the photo's
+   own background brightness, by request after comparing 5 visual options. */
 .highlight-caption {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   margin: 0;
-  padding: 54px 14px 14px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0));
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.72);
   color: #fff;
   font-weight: 700;
   font-size: 1.1rem;
