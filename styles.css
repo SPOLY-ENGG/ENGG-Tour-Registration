@@ -754,6 +754,31 @@ h1 {
 .home-card.tint-2 { background: #dcf3ee; }
 .home-card.tint-3 { background: #fff3da; }
 
+/* Homepage's own "big" tiles (Discovery Information, Course Information,
+   Course Brochure) — larger text/icon/padding than the 3 register tiles
+   sitting between them, by request. */
+.home-card.big {
+  padding: 16px 20px;
+}
+
+.home-card.big .home-card-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.home-card.big .home-card-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.home-card.big h2 {
+  font-size: 1.15rem;
+}
+
+.home-card.big p {
+  font-size: 0.86rem;
+}
+
 @media (max-width: 600px) {
   .top { flex-direction: column; gap: 8px; }
   h1 { font-size: 1.3rem; margin-bottom: 2px; }
