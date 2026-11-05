@@ -257,12 +257,7 @@ h1 {
 /* The activity title now overlays the bottom of its picture instead of
    sitting in a separate text block below it — no description is shown
    alongside it either, by request ("the heading on top of the picture
-   while no explanation is needed"). Caption style is a solid dark bar
-   (not a gradient) for consistent legibility regardless of the photo's
-   own background brightness, by request after comparing 5 visual options.
-   Text wraps onto a 2nd line rather than truncating with an ellipsis, by
-   follow-up request, so mobile visitors can read a longer title in full
-   instead of it being cut off mid-word. */
+   while no explanation is needed"). */
 .highlight-caption {
   position: absolute;
   left: 0;
@@ -424,7 +419,13 @@ h1 {
    always reachable without scrolling down, however many time slots are
    on screen above it. register.js adds matching bottom padding to .wrap
    (sized to this panel's own rendered height) so the slot grid and
-   footer never end up hidden underneath it. */
+   footer never end up hidden underneath it.
+
+   It starts collapsed to just its toggle header — covering the whole
+   panel permanently was itself misleading, since on a phone it hid most
+   of the slot grid below ~13:30 with nothing to suggest more slots were
+   there to scroll to. Tapping the header (or picking a slot, which
+   expands it automatically — see register.js) reveals the rest. */
 #bookingPanel {
   position: fixed;
   left: 0;
@@ -438,6 +439,40 @@ h1 {
   overflow-y: auto;
   border-radius: var(--radius) var(--radius) 0 0;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+  padding: 0;
+}
+
+.booking-panel-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 14px 20px;
+  cursor: pointer;
+}
+
+.booking-panel-chevron {
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+#bookingPanel.collapsed .booking-panel-chevron {
+  transform: rotate(180deg);
+}
+
+.booking-panel-body {
+  padding: 0 20px 20px;
+  overflow: hidden;
+}
+
+#bookingPanel.collapsed .booking-panel-body {
+  display: none;
 }
 
 .selection-list {

@@ -9,6 +9,7 @@
   var statusData = null;
   var selections = []; // [{slot}] — this page only ever books the one tourId above
   var confirmationShown = false; // true between a successful registration and "Make another registration"
+  var panelCollapsed = true; // starts collapsed so the slot grid isn't hidden behind it — see styles.css's #bookingPanel comment
 
   var tourTitle = document.getElementById('tourTitle');
   var tourShortDesc = document.getElementById('tourShortDesc');
@@ -16,6 +17,8 @@
   var statusLine = document.getElementById('statusLine');
   var slotGrid = document.getElementById('slotGrid');
   var bookingPanel = document.getElementById('bookingPanel');
+  var panelToggle = document.getElementById('panelToggle');
+  var panelToggleLabel = document.getElementById('panelToggleLabel');
   var selectionList = document.getElementById('selectionList');
   var emailInput = document.getElementById('emailInput');
   var participantsInput = document.getElementById('participantsInput');
@@ -122,6 +125,7 @@
     }
     hideSlotNotice();
     selections.push({ slot: slot });
+    panelCollapsed = false; // picking a slot auto-expands the panel so the selection/email/Register button are immediately visible
     render();
   }
 
@@ -129,8 +133,14 @@
   // render()'s own !statusData.activeDay check for the one case it's
   // hidden), rather than only appearing after a slot is picked, by
   // request — so it reads as a permanent fixture of the page, not
-  // something that pops in.
+  // something that pops in. It starts collapsed to just its toggle header
+  // (panelCollapsed, see styles.css's #bookingPanel comment) since a fully
+  // expanded panel hid most of the slot grid with nothing suggesting more
+  // slots were reachable by scrolling — misleading visitors into thinking
+  // registration ended wherever the panel happened to start overlapping.
   function renderSelections() {
+    bookingPanel.classList.toggle('collapsed', panelCollapsed);
+    panelToggleLabel.textContent = selections.length ? ('Your selections (' + selections.length + ')') : 'Your selections';
     selectionList.innerHTML = '';
     if (!selections.length) {
       var empty = document.createElement('li');
@@ -150,6 +160,12 @@
     });
     syncBookingPanelSpace();
   }
+
+  panelToggle.addEventListener('click', function () {
+    panelCollapsed = !panelCollapsed;
+    bookingPanel.classList.toggle('collapsed', panelCollapsed);
+    syncBookingPanelSpace();
+  });
 
   // #bookingPanel is fixed to the bottom of the viewport (see styles.css)
   // so it stays visible without scrolling — this keeps the page's own
@@ -261,6 +277,7 @@
   newRegBtn.addEventListener('click', function () {
     confirmPanel.hidden = true;
     confirmationShown = false;
+    panelCollapsed = true;
     emailInput.value = '';
     participantsInput.value = '1';
     formMsg.textContent = '';

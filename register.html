@@ -27,19 +27,24 @@
   <div class="slot-grid" id="slotGrid"></div>
 
   <section class="panel booking-panel" id="bookingPanel" hidden>
-    <h2>Your selections</h2>
-    <ul class="selection-list" id="selectionList"></ul>
-    <div class="field-row">
-      <label for="emailInput">Your email (the person attending)</label>
-      <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email">
+    <button type="button" class="booking-panel-toggle" id="panelToggle">
+      <span id="panelToggleLabel">Your selections</span>
+      <span class="booking-panel-chevron" id="panelChevron">▲</span>
+    </button>
+    <div class="booking-panel-body" id="panelBody">
+      <ul class="selection-list" id="selectionList"></ul>
+      <div class="field-row">
+        <label for="emailInput">Your email (the person attending)</label>
+        <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field-row">
+        <label for="participantsInput">Number of participants in your group (max 5)</label>
+        <input type="number" id="participantsInput" min="1" max="5" value="1">
+        <p class="field-hint" id="participantsWarning" hidden>⚠ You can only enter up to 5 participants.</p>
+      </div>
+      <button type="button" class="btn primary" id="submitBtn">Register</button>
+      <p class="form-msg" id="formMsg"></p>
     </div>
-    <div class="field-row">
-      <label for="participantsInput">Number of participants in your group (max 5)</label>
-      <input type="number" id="participantsInput" min="1" max="5" value="1">
-      <p class="field-hint" id="participantsWarning" hidden>⚠ You can only enter up to 5 participants.</p>
-    </div>
-    <button type="button" class="btn primary" id="submitBtn">Register</button>
-    <p class="form-msg" id="formMsg"></p>
   </section>
 
   <section class="panel confirm-panel" id="confirmPanel" hidden>
