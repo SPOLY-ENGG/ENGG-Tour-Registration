@@ -77,7 +77,7 @@
       location: 'T12101A-D',
       mapQuery: 'SP T12',
       activities: [
-        { icon: 'diploma', img: '', title: 'Diploma in Aerospace Electronics (DASE) Discovery', desc: 'Learn about the Diploma in Aerospace Electronics (DASE) — covering avionics, aircraft electrical systems, and aerospace electronic instrumentation.' },
+        { icon: 'diploma', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/dase-discovery.png', title: 'Diploma in Aerospace Electronics (DASE) Discovery', desc: 'Learn about the Diploma in Aerospace Electronics (DASE) — covering avionics, aircraft electrical systems, and aerospace electronic instrumentation.' },
         { icon: 'diploma', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/dcpe-discovery.jpg', title: 'Diploma in Computer Engineering (DCPE) Discovery', desc: 'Learn about the Diploma in Computer Engineering (DCPE) — covering embedded systems, software development, and computer hardware design.' },
         { icon: 'diploma', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/deb-discovery.png', title: 'Diploma in Engineering with Business (DEB) Discovery', desc: 'Learn about the Diploma in Engineering with Business (DEB) — combining core engineering fundamentals with business and management skills.' },
         { icon: 'diploma', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/deee-discovery.png', title: 'Diploma in Electrical and Electronic Engineering (DEEE) Discovery', desc: 'Learn about the Diploma in Electrical and Electronic Engineering (DEEE) — covering circuit design, power systems, and electronic systems.' },
@@ -102,7 +102,7 @@
       location: 'T18A212',
       mapQuery: 'SP Aerohub',
       activities: [
-        { icon: 'diploma', img: '', title: 'Diploma in Aerospace Electronics (DASE) Discovery', desc: 'Learn about the Diploma in Aerospace Electronics (DASE) — covering avionics, aircraft electrical systems, and aerospace electronic instrumentation.' },
+        { icon: 'diploma', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/dase-discovery.png', title: 'Diploma in Aerospace Electronics (DASE) Discovery', desc: 'Learn about the Diploma in Aerospace Electronics (DASE) — covering avionics, aircraft electrical systems, and aerospace electronic instrumentation.' },
         { icon: 'diploma', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/dare-discovery.jpg', title: 'Diploma in Aeronautical Engineering (DARE) Discovery', desc: 'Learn about the Diploma in Aeronautical Engineering (DARE) — covering aircraft maintenance, aerodynamics, and aviation systems.' },
         { icon: 'jet', img: '', title: 'Aircraft Hangar', desc: 'Walk through the hangar and see RSAF and commercial aircraft and helicopters up close.' },
         { icon: 'jet', img: 'https://spoly-engg.github.io/ENGG-Tour-Registration/flight-sim.png', title: 'Flight Simulation Showcase', desc: 'Catch a live flight simulation showcase in action.' },
