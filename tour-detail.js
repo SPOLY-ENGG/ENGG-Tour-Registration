@@ -145,25 +145,24 @@
       ? '<p class="highlight-location"><a href="' + mapUrl(tourMapQuery(tour)) + '" target="_blank" rel="noopener">📍 ' + location + ' — view on Google Maps</a></p>'
       : '';
     if (!activities.length) return locationHtml;
+    // Title only, no description — the picture carries the content, the
+    // heading overlays its bottom edge as a caption (by request: "the
+    // heading on top of the picture while no explanation is needed").
+    // Activities without a picture (e.g. Souvenir) skip the image block
+    // entirely and show the title on its own, icon inline beside it.
     var cards = activities.map(function (a) {
       var iconHtml = ACTIVITY_ICONS[a.icon] || ACTIVITY_ICONS.star;
-      // Activities without a picture (e.g. Souvenir) skip the banner-image
-      // block entirely rather than showing a broken/empty image box — the
-      // icon moves inline next to the title instead of its usual spot as a
-      // badge over the (now-absent) photo.
       var media = a.img
         ? '<span class="highlight-media">' +
           '<img src="' + a.img + '" alt="" loading="lazy">' +
+          '<span class="highlight-caption">' + a.title + '</span>' +
           '<span class="highlight-icon">' + iconHtml + '</span>' +
           '</span>'
         : '';
       var inlineIcon = a.img ? '' : '<span class="highlight-icon-inline">' + iconHtml + '</span>';
       return '<div class="highlight-card' + (a.img ? '' : ' no-media') + '">' +
         media +
-        '<span class="highlight-card-text">' +
-        '<h3>' + inlineIcon + a.title + '</h3>' +
-        '<p>' + a.desc + '</p>' +
-        '</span>' +
+        (a.img ? '' : '<span class="highlight-card-text"><h3>' + inlineIcon + a.title + '</h3></span>') +
         '</div>';
     }).join('');
     return locationHtml +
