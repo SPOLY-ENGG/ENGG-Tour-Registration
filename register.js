@@ -28,7 +28,17 @@
   var newRegBtn = document.getElementById('newRegBtn');
   var slotNotice = document.getElementById('slotNotice');
 
-  var SLOT_FULL_MESSAGE = 'Thank you for your interest! This time slot is full — please choose a different time slot, or register for a different discovery.';
+  // Fallback text only — once statusData loads, the admin-edited message
+  // from the EmailTemplate sheet (via the "Edit confirmation email" modal's
+  // "Warning messages" section) is used instead, so these two never drift.
+  var SLOT_FULL_MESSAGE_FALLBACK = 'Thank you for your interest! This time slot is full — please choose a different time slot, or register for a different discovery.';
+  var MAX_PARTICIPANTS_MESSAGE_FALLBACK = 'You can only enter up to {{maxParticipants}} participants per registration.';
+
+  function mergeTemplate(str, vars) {
+    return String(str || '').replace(/\{\{(\w+)\}\}/g, function (match, key) {
+      return vars[key] != null ? vars[key] : '';
+    });
+  }
 
   function showSlotNotice(message) {
     slotNotice.textContent = message;
@@ -105,7 +115,7 @@
     var booked = statusData.counts[statusData.activeDay][tour.id][slot] || 0;
     var vacancy = tour.capacity - booked;
     if (vacancy <= 0) {
-      showSlotNotice(SLOT_FULL_MESSAGE);
+      showSlotNotice((statusData.emailTemplate && statusData.emailTemplate.slotFullMessage) || SLOT_FULL_MESSAGE_FALLBACK);
       return;
     }
     hideSlotNotice();
@@ -167,7 +177,8 @@
     }
     if (participants > MAX_PARTICIPANTS) {
       participantsWarning.hidden = false;
-      formMsg.textContent = 'You can only enter up to ' + MAX_PARTICIPANTS + ' participants.';
+      var maxMsg = (statusData.emailTemplate && statusData.emailTemplate.maxParticipantsMessage) || MAX_PARTICIPANTS_MESSAGE_FALLBACK;
+      formMsg.textContent = mergeTemplate(maxMsg, { maxParticipants: MAX_PARTICIPANTS });
       formMsg.className = 'form-msg error';
       return;
     }
