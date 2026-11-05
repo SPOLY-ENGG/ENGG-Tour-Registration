@@ -28,7 +28,8 @@
     // itself, instead of a separate POST — see Code.gs's doGet() comment.
     return apiGet({ action: 'status', page: 'home' }).then(function (data) {
       statusData = data;
-      dayBadge.textContent = statusData.activeDay ? 'Day ' + statusData.activeDay : 'Not open today';
+      dayBadge.textContent = statusData.activeDayLabel || (statusData.activeDay ? 'Day ' + statusData.activeDay : 'Not open today');
+      if (dayOverrideSelect) dayOverrideSelect.value = statusData.dayOverride || 'auto';
     }).catch(function () {
       dayBadge.textContent = 'Day –';
     });
@@ -112,6 +113,38 @@
   });
 
   userClose.addEventListener('click', function () { userModal.hidden = true; });
+
+  // Day override — lets the team test registration without waiting for the
+  // real 7–9 Jan 2027 dates (Day 1/2/3 force that day open, Trial opens as
+  // Day 1 but labelled "Trial" so test bookings are never mistaken for real
+  // ones, Not Open Today forces closed). Same edit password as the other
+  // admin actions, since this controls whether real visitors can register.
+  var dayOverrideSelect = document.getElementById('dayOverrideSelect');
+  var setDayOverrideBtn = document.getElementById('setDayOverrideBtn');
+
+  setDayOverrideBtn.addEventListener('click', function () {
+    var pw = window.prompt('Enter the edit password:');
+    if (pw === null) return;
+    setDayOverrideBtn.disabled = true;
+    setDayOverrideBtn.textContent = 'Setting…';
+    apiPost({ action: 'setDayOverride', password: pw, value: dayOverrideSelect.value }).then(function (res) {
+      setDayOverrideBtn.disabled = false;
+      setDayOverrideBtn.textContent = 'Set';
+      if (!res.ok) {
+        userMsg.textContent = res.error || 'Could not set the registration day.';
+        userMsg.className = 'form-msg error';
+        return;
+      }
+      userMsg.textContent = 'Registration day updated.';
+      userMsg.className = 'form-msg ok';
+      refreshStatus().then(renderUserStatus);
+    }).catch(function () {
+      setDayOverrideBtn.disabled = false;
+      setDayOverrideBtn.textContent = 'Set';
+      userMsg.textContent = 'Network error — please try again.';
+      userMsg.className = 'form-msg error';
+    });
+  });
 
   // Edit/Download/Reset all require the separate, stricter edit password,
   // even though the viewer already unlocked the User panel with the user

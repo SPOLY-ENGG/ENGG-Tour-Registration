@@ -101,7 +101,20 @@
 <div class="modal-backdrop" id="userModal" hidden>
   <div class="modal wide">
     <h2>Overall registration status</h2>
-    <p class="muted">The active day is set automatically: Day 1 on 7 Jan 2027, Day 2 on 8 Jan 2027, Day 3 on 9 Jan 2027.</p>
+    <p class="muted">By default the active day is set automatically: Day 1 on 7 Jan 2027, Day 2 on 8 Jan 2027, Day 3 on 9 Jan 2027. Override it below to test the system, or to correct it by hand.</p>
+    <div class="day-control">
+      <label for="dayOverrideSelect">Registration day:
+        <select id="dayOverrideSelect">
+          <option value="auto">Auto (by date)</option>
+          <option value="1">Day 1</option>
+          <option value="2">Day 2</option>
+          <option value="3">Day 3</option>
+          <option value="trial">Trial (test mode)</option>
+          <option value="closed">Not Open Today</option>
+        </select>
+      </label>
+      <button type="button" class="btn primary" id="setDayOverrideBtn">Set</button>
+    </div>
     <div class="user-admin-actions">
       <button type="button" class="btn ghost" id="openEditBtn">✎ Edit tour content</button>
       <button type="button" class="btn ghost" id="downloadBtn">⬇ Download registrations</button>

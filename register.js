@@ -72,7 +72,7 @@
       statusLine.textContent = 'Discovery registration is only open on 7–9 Jan 2027. Please come back during the event.';
       return;
     }
-    dayBadge.textContent = 'Day ' + statusData.activeDay;
+    dayBadge.textContent = statusData.activeDayLabel || ('Day ' + statusData.activeDay);
     slotGrid.innerHTML = '';
     statusData.slots.forEach(function (slot) {
       var booked = statusData.counts[statusData.activeDay][tour.id][slot] || 0;
@@ -207,7 +207,7 @@
     if (!confirmed.length) return;
     bookingPanel.hidden = true;
     confirmPanel.hidden = false;
-    confirmMeeting.textContent = 'Day ' + res.activeDay + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
+    confirmMeeting.textContent = (res.activeDayLabel || ('Day ' + res.activeDay)) + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
       ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each discovery start time. Please screenshot this page as your confirmation.';
     confirmList.innerHTML = '';
     confirmed.forEach(function (c) {
