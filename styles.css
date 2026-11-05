@@ -259,7 +259,10 @@ h1 {
    alongside it either, by request ("the heading on top of the picture
    while no explanation is needed"). Caption style is a solid dark bar
    (not a gradient) for consistent legibility regardless of the photo's
-   own background brightness, by request after comparing 5 visual options. */
+   own background brightness, by request after comparing 5 visual options.
+   Text wraps onto a 2nd line rather than truncating with an ellipsis, by
+   follow-up request, so mobile visitors can read a longer title in full
+   instead of it being cut off mid-word. */
 .highlight-caption {
   position: absolute;
   left: 0;
@@ -272,9 +275,6 @@ h1 {
   font-weight: 700;
   font-size: 1.1rem;
   line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* No-photo activity cards (e.g. Souvenir) show the icon inline before the
