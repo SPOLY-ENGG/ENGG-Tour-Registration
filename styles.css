@@ -418,6 +418,28 @@ h1 {
   margin-top: 24px;
 }
 
+/* register.html's "Your selections"/Register panel stays pinned to the
+   bottom of the viewport instead of scrolling away under the slot grid,
+   by request — so the slots picked so far and the Register button are
+   always reachable without scrolling down, however many time slots are
+   on screen above it. register.js adds matching bottom padding to .wrap
+   (sized to this panel's own rendered height) so the slot grid and
+   footer never end up hidden underneath it. */
+#bookingPanel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  margin: 0 auto;
+  max-width: 980px;
+  width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+}
+
 .selection-list {
   list-style: none;
   margin: 0 0 16px;

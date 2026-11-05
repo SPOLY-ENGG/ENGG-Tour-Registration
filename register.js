@@ -136,7 +136,19 @@
       li.appendChild(rm);
       selectionList.appendChild(li);
     });
+    syncBookingPanelSpace();
   }
+
+  // #bookingPanel is fixed to the bottom of the viewport (see styles.css)
+  // so it stays visible without scrolling — this keeps the page's own
+  // content from ending up hidden underneath it by giving the page the
+  // same amount of bottom breathing room as the panel's current height
+  // (it grows with more selections, so this re-measures every time).
+  function syncBookingPanelSpace() {
+    document.body.style.paddingBottom = bookingPanel.hidden ? '' : bookingPanel.offsetHeight + 'px';
+  }
+
+  window.addEventListener('resize', syncBookingPanelSpace);
 
   function loadStatus() {
     statusLine.textContent = 'Loading discovery information…';
@@ -217,6 +229,7 @@
     var confirmed = (res.results || []).filter(function (r) { return r.ok; });
     if (!confirmed.length) return;
     bookingPanel.hidden = true;
+    syncBookingPanelSpace();
     confirmPanel.hidden = false;
     confirmMeeting.textContent = (res.activeDayLabel || ('Day ' + res.activeDay)) + ' — please gather at ' + (statusData.meetingPoint || 'T1621') +
       ', ' + (statusData.gatherMinutesBefore || 5) + ' minutes before each discovery start time. Please screenshot this page as your confirmation.';
