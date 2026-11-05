@@ -23,7 +23,7 @@
     tourIconNav.innerHTML = '';
     statusData.tours.forEach(function (tour, i) {
       var link = document.createElement('a');
-      link.className = 'home-card ' + TINTS[i % TINTS.length];
+      link.className = 'home-card big ' + TINTS[i % TINTS.length];
       link.href = 'tour-detail.html?tour=' + encodeURIComponent(tour.id);
       link.innerHTML =
         '<span class="home-card-icon">' + TOUR_ICON + '</span>' +
