@@ -92,7 +92,7 @@
       activities: [
         { icon: 'star', img: 'https://picsum.photos/seed/eee-hands-on/240/240', title: 'Hands-on Activity: Circuit Building', desc: 'Build and test a simple circuit yourself under the guidance of our students and instructors.' },
         { icon: 'trophy', img: 'https://picsum.photos/seed/eee-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects in electrical and electronic engineering, including IoT and embedded systems.' },
-        { icon: 'gift', img: 'https://picsum.photos/seed/eee-door-gift/240/240', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+        { icon: 'gift', img: '', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
       ],
     },
     mae: {
@@ -103,7 +103,7 @@
         { icon: 'robotArm', img: 'https://picsum.photos/seed/mae-robot-arm/240/240', title: 'Hands-on Activity: Robot Arm', desc: 'Get behind the controls of an industrial robot arm and try a pick-and-place task yourself.' },
         { icon: 'lift', img: 'https://picsum.photos/seed/mae-lift-project/240/240', title: 'Project: Lift Concept', desc: 'See a student-built lift system in action, demonstrating mechanical design and control concepts.' },
         { icon: 'trophy', img: 'https://picsum.photos/seed/mae-project-showcase/240/240', title: 'Student Project Showcase', desc: 'Browse a showcase of final-year student projects across mechanical, mechatronics, and robotics engineering.' },
-        { icon: 'gift', img: 'https://picsum.photos/seed/mae-door-gift/240/240', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+        { icon: 'gift', img: '', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
       ],
     },
     aero: {
@@ -113,7 +113,7 @@
         { icon: 'jet', img: 'https://picsum.photos/seed/aero-aircraft-showcase/240/240', title: 'Aircraft & Flight Simulation Showcase', desc: 'See RSAF and commercial aircraft and helicopters up close, plus a live flight simulation showcase.' },
         { icon: 'vr', img: 'https://picsum.photos/seed/aero-vr-showcase/240/240', title: 'VR Project Showcase', desc: 'Experience student-built virtual reality projects exploring aerospace engineering concepts.' },
         { icon: 'drone', img: 'https://picsum.photos/seed/aero-drone-flying/240/240', title: 'Hands-on Activity: Drone Obstacle Flying', desc: 'Take the controls and fly a drone through an obstacle course.' },
-        { icon: 'gift', img: 'https://picsum.photos/seed/aero-door-gift/240/240', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
+        { icon: 'gift', img: '', title: 'Souvenir', desc: 'Take home a souvenir to remember the day — while stocks last!' },
       ],
     },
   };
@@ -147,13 +147,22 @@
       : '';
     if (!activities.length) return locationHtml;
     var cards = activities.map(function (a) {
-      return '<div class="highlight-card">' +
-        '<span class="highlight-media">' +
-        '<img src="' + a.img + '" alt="" loading="lazy">' +
-        '<span class="highlight-icon">' + (ACTIVITY_ICONS[a.icon] || ACTIVITY_ICONS.star) + '</span>' +
-        '</span>' +
+      var iconHtml = ACTIVITY_ICONS[a.icon] || ACTIVITY_ICONS.star;
+      // Activities without a picture (e.g. Souvenir) skip the banner-image
+      // block entirely rather than showing a broken/empty image box — the
+      // icon moves inline next to the title instead of its usual spot as a
+      // badge over the (now-absent) photo.
+      var media = a.img
+        ? '<span class="highlight-media">' +
+          '<img src="' + a.img + '" alt="" loading="lazy">' +
+          '<span class="highlight-icon">' + iconHtml + '</span>' +
+          '</span>'
+        : '';
+      var inlineIcon = a.img ? '' : '<span class="highlight-icon-inline">' + iconHtml + '</span>';
+      return '<div class="highlight-card' + (a.img ? '' : ' no-media') + '">' +
+        media +
         '<span class="highlight-card-text">' +
-        '<h3>' + a.title + '</h3>' +
+        '<h3>' + inlineIcon + a.title + '</h3>' +
         '<p>' + a.desc + '</p>' +
         '</span>' +
         '</div>';
