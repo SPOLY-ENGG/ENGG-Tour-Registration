@@ -257,17 +257,15 @@ h1 {
 /* The activity title now overlays the bottom of its picture instead of
    sitting in a separate text block below it — no description is shown
    alongside it either, by request ("the heading on top of the picture
-   while no explanation is needed"). Size is the same across every card
-   (one fixed rem value, not computed per-title) and forced to a single
-   line via overflow:hidden + text-overflow:ellipsis, by request. */
+   while no explanation is needed"). */
 .highlight-caption {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   margin: 0;
-  padding: 32px 14px 12px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  padding: 54px 14px 14px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0));
   color: #fff;
   font-weight: 700;
   font-size: 1.1rem;
