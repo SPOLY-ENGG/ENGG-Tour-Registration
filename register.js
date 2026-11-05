@@ -8,6 +8,7 @@
 
   var statusData = null;
   var selections = []; // [{slot}] — this page only ever books the one tourId above
+  var confirmationShown = false; // true between a successful registration and "Make another registration"
 
   var tourTitle = document.getElementById('tourTitle');
   var tourShortDesc = document.getElementById('tourShortDesc');
@@ -83,6 +84,7 @@
       return;
     }
     dayBadge.textContent = statusData.activeDayLabel || ('Day ' + statusData.activeDay);
+    bookingPanel.hidden = confirmationShown;
     slotGrid.innerHTML = '';
     statusData.slots.forEach(function (slot) {
       var booked = statusData.counts[statusData.activeDay][tour.id][slot] || 0;
@@ -123,9 +125,19 @@
     render();
   }
 
+  // The panel stays visible at all times once registration is open (see
+  // render()'s own !statusData.activeDay check for the one case it's
+  // hidden), rather than only appearing after a slot is picked, by
+  // request — so it reads as a permanent fixture of the page, not
+  // something that pops in.
   function renderSelections() {
-    bookingPanel.hidden = selections.length === 0;
     selectionList.innerHTML = '';
+    if (!selections.length) {
+      var empty = document.createElement('li');
+      empty.className = 'muted';
+      empty.textContent = 'No time slot selected yet — tap a time above.';
+      selectionList.appendChild(empty);
+    }
     selections.forEach(function (s, i) {
       var li = document.createElement('li');
       li.innerHTML = '<span>' + formatSlot(s.slot) + '</span>';
@@ -228,6 +240,7 @@
   function showConfirmation(res, email) {
     var confirmed = (res.results || []).filter(function (r) { return r.ok; });
     if (!confirmed.length) return;
+    confirmationShown = true;
     bookingPanel.hidden = true;
     syncBookingPanelSpace();
     confirmPanel.hidden = false;
@@ -247,8 +260,10 @@
 
   newRegBtn.addEventListener('click', function () {
     confirmPanel.hidden = true;
+    confirmationShown = false;
     emailInput.value = '';
     participantsInput.value = '1';
     formMsg.textContent = '';
+    render();
   });
 })();
