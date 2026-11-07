@@ -172,15 +172,18 @@
 
   function render() {
     var tour = currentTour();
-    var registerUrl = 'register.html?tour=' + encodeURIComponent(tour.id);
+    // "Register for this discovery" link hidden by request (registration
+    // isn't launching yet — same reasoning as the homepage's register
+    // tiles, which are commented out in index.html rather than deleted).
+    // Kept here, just not rendered, so it's a one-line restore later:
+    // var registerUrl = 'register.html?tour=' + encodeURIComponent(tour.id);
     tourRoot.className = 'tour-card';
     tourRoot.innerHTML =
       '<div class="top"><h2>' + tour.name + '</h2>' +
       '<button type="button" class="btn ghost" id="editTourBtn">✎ Edit</button></div>' +
       (tour.heroImageUrl ? '<img class="tour-detail-hero" src="' + tour.heroImageUrl + '" alt="">' : '') +
       '<p class="desc">' + (tour.detailDescription || tour.shortDescription || '') + '</p>' +
-      highlightsHtml(tour) +
-      '<p><a class="more-link" href="' + registerUrl + '">Register for this discovery →</a></p>';
+      highlightsHtml(tour);
     document.getElementById('editTourBtn').addEventListener('click', function () { openEditModal(); });
   }
 
